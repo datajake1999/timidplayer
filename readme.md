@@ -11,7 +11,7 @@ The minimum supported Windows version is 2000, and the default synthesizer confi
 When the application is launched for the first time, an error will pop up if the synthesizer fails to load its instrument configuration. To resolve this, open the Timidity configuration dialog, and browse to a previously downloaded configuration file. If a file named timidity.cfg exists in the application's working directory, the synthesizer will attempt to load this file if the configuration file path hasn't already been set.
 
 # The Main Window
-By default, the main window shows a status bar, seek bar, and playlist view. When the playlist view is enabled, pressing tab shifts focus to the list, and pressing tab again shifts focus back to the main window. When the list view is in focus, navigation keys are intercepted by the list view control. Presseing enter on a selected list item plays it, and pressing delete removes it from the playlist. The application can also be moved to the top of the z-order by enabling the Always On Top option in the system menu.
+By default, the main window shows a status bar, seek bar, and playlist view. When the playlist view is enabled, pressing tab shifts focus to the list, and pressing tab again shifts focus back to the main window. When the list view is in focus, navigation keys are intercepted by the list view control. Pressing enter on a selected list item plays it, and pressing delete removes it from the playlist. A context menu is available when a file is loaded into the player. The application can also be moved to the top of the z-order by enabling the Always On Top option in the system menu.
 
 # Configuration
 ## Timidity
