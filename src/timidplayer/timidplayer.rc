@@ -114,109 +114,109 @@ IDR_MAINMENU MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Open MIDI Files...\tCtrl+O",     ID_FILE_OPEN
-        MENUITEM "&Add MIDI Files...\tCtrl+A",      ID_FILE_ADDFILES
-        MENUITEM "Add &Folder...\tCtrl+Shift+A",    ID_FILE_ADDFOLDER
-        MENUITEM "Pas&te Files\tCtrl+V",            ID_FILE_PASTE
+        MENUITEM "&Open MIDI Files...\tCtrl+O",                ID_FILE_OPEN
+        MENUITEM "&Add MIDI Files...\tCtrl+A",                 ID_FILE_ADDFILES
+        MENUITEM "Add &Folder...\tCtrl+Shift+A",               ID_FILE_ADDFOLDER
+        MENUITEM "Pas&te Files\tCtrl+V",                       ID_FILE_PASTE
         MENUITEM SEPARATOR
         POPUP "&Recent Files"
         BEGIN
-            MENUITEM "(Empty)",                     ID_FILE_RECENT_EMPTY, GRAYED
+            MENUITEM "(Empty)",                                ID_FILE_RECENT_EMPTY, GRAYED
         END
-        MENUITEM "C&lear Recent Files\tCtrl+Shift+L", ID_FILE_CLEARRECENTFILES
+        MENUITEM "C&lear Recent Files\tCtrl+Shift+L",          ID_FILE_CLEARRECENTFILES
         MENUITEM SEPARATOR
-        MENUITEM "Open &Playlist...\tCtrl+Shift+O", ID_FILE_OPENPLAYLIST
-        MENUITEM "Sa&ve Playlist...\tCtrl+Shift+S", ID_FILE_SAVEPLAYLIST
+        MENUITEM "Open &Playlist...\tCtrl+Shift+O",            ID_FILE_OPENPLAYLIST
+        MENUITEM "Sa&ve Playlist...\tCtrl+Shift+S",            ID_FILE_SAVEPLAYLIST
         MENUITEM SEPARATOR
-        MENUITEM "&Unload Current File\tCtrl+U",    ID_FILE_UNLOAD
-        MENUITEM "&Clear Playlist\tCtrl+Shift+C",   ID_FILE_CLEARPLAYLIST
+        MENUITEM "&Unload Current File\tCtrl+U",               ID_FILE_UNLOAD
+        MENUITEM "&Clear Playlist\tCtrl+Shift+C",              ID_FILE_CLEARPLAYLIST
         MENUITEM SEPARATOR
-        MENUITEM "Convert to &WAV...\tCtrl+W",      ID_FILE_CONVERTCURRENT
-        MENUITEM "&Batch Convert...\tCtrl+B",       ID_FILE_BATCHCONVERT
+        MENUITEM "Convert to &WAV...\tCtrl+W",                 ID_FILE_CONVERTCURRENT
+        MENUITEM "&Batch Convert...\tCtrl+B",                  ID_FILE_BATCHCONVERT
         MENUITEM SEPARATOR
-        MENUITEM "E&xit\tAlt+F4",                   ID_FILE_EXIT
+        MENUITEM "E&xit\tAlt+F4",                              ID_FILE_EXIT
     END
     POPUP "&Playback"
     BEGIN
-        MENUITEM "&Play\tSpace",                    ID_PLAYBACK_PLAYPAUSE
-        MENUITEM "&Stop\tEsc",                      ID_PLAYBACK_STOP
+        MENUITEM "&Play\tSpace",                               ID_PLAYBACK_PLAYPAUSE
+        MENUITEM "&Stop\tEsc",                                 ID_PLAYBACK_STOP
         MENUITEM SEPARATOR
-        MENUITEM "&Next Track\tCtrl+Right",         ID_PLAYBACK_NEXTTRACK
-        MENUITEM "Pre&vious Track\tCtrl+Left",      ID_PLAYBACK_PREVTRACK
-        MENUITEM "Fi&rst Track\tCtrl+Shift+Left",   ID_PLAYBACK_FIRSTTRACK
-        MENUITEM "&Last Track\tCtrl+Shift+Right",   ID_PLAYBACK_LASTTRACK
+        MENUITEM "&Next Track\tCtrl+Right",                    ID_PLAYBACK_NEXTTRACK
+        MENUITEM "Pre&vious Track\tCtrl+Left",                 ID_PLAYBACK_PREVTRACK
+        MENUITEM "Fi&rst Track\tCtrl+Shift+Left",              ID_PLAYBACK_FIRSTTRACK
+        MENUITEM "&Last Track\tCtrl+Shift+Right",              ID_PLAYBACK_LASTTRACK
         MENUITEM SEPARATOR
-        MENUITEM "Fast &Forward\tRight",            ID_SEEK_FORWARD
-        MENUITEM "Re&wind\tLeft",                   ID_SEEK_BACK
-        MENUITEM "R&estart\tCtrl+R",                ID_PLAYBACK_RESTART
-        MENUITEM "Jump t&o End\tCtrl+E",            ID_PLAYBACK_JUMPTOEND
+        MENUITEM "Fast &Forward\tRight",                       ID_SEEK_FORWARD
+        MENUITEM "Re&wind\tLeft",                              ID_SEEK_BACK
+        MENUITEM "R&estart\tCtrl+R",                           ID_PLAYBACK_RESTART
+        MENUITEM "Jump t&o End\tCtrl+E",                       ID_PLAYBACK_JUMPTOEND
         MENUITEM SEPARATOR
-        MENUITEM "&Jump to Time...\tCtrl+J",        ID_PLAYBACK_JUMPTOTIME
-        MENUITEM "Sleep T&imer...\tCtrl+T",         ID_PLAYBACK_SLEEPTIMER
+        MENUITEM "&Jump to Time...\tCtrl+J",                   ID_PLAYBACK_JUMPTOTIME
+        MENUITEM "Sleep T&imer...\tCtrl+T",                    ID_PLAYBACK_SLEEPTIMER
         MENUITEM SEPARATOR
-        MENUITEM "S&huffle Playlist\tCtrl+H",       ID_PLAYBACK_SHUFFLE
-        MENUITEM "&Manage Playlist...\tCtrl+M",     ID_PLAYBACK_MANAGEPLAYLIST
+        MENUITEM "S&huffle Playlist\tCtrl+H",                  ID_PLAYBACK_SHUFFLE
+        MENUITEM "&Manage Playlist...\tCtrl+M",                ID_PLAYBACK_MANAGEPLAYLIST
         MENUITEM SEPARATOR
         POPUP "Repe&at"
         BEGIN
-            MENUITEM "&Off",                        ID_PLAYBACK_REPEATOFF
-            MENUITEM "Repeat O&ne",                 ID_PLAYBACK_REPEATONE
-            MENUITEM "Repeat &All",                 ID_PLAYBACK_REPEATALL
+            MENUITEM "&Off",                                   ID_PLAYBACK_REPEATOFF
+            MENUITEM "Repeat O&ne",                            ID_PLAYBACK_REPEATONE
+            MENUITEM "Repeat &All",                            ID_PLAYBACK_REPEATALL
         END
         MENUITEM SEPARATOR
-        MENUITEM "S&tatistics...\tCtrl+I",          ID_PLAYBACK_STATS
+        MENUITEM "S&tatistics...\tCtrl+I",                     ID_PLAYBACK_STATS
         MENUITEM SEPARATOR
-        MENUITEM "Volume &Up\tUp",                  ID_VOLUME_UP
-        MENUITEM "Volume &Down\tDown",              ID_VOLUME_DOWN
+        MENUITEM "Volume &Up\tUp",                             ID_VOLUME_UP
+        MENUITEM "Volume &Down\tDown",                         ID_VOLUME_DOWN
     END
     POPUP "&Configure"
     BEGIN
-        MENUITEM "&Timidity...\tCtrl+G",            ID_CONFIGURE_TIMIDITY
-        MENUITEM "&Audio Output...\tCtrl+Shift+D",  ID_CONFIGURE_AUDIOOUTPUT
-        MENUITEM "&Player Options...\tCtrl+P",      ID_CONFIGURE_PLAYEROPTIONS
-        MENUITEM "&MIDI Input...\tCtrl+Shift+M",    ID_CONFIGURE_MIDIINPUT
+        MENUITEM "&Timidity...\tCtrl+G",                       ID_CONFIGURE_TIMIDITY
+        MENUITEM "&Audio Output...\tCtrl+Shift+D",             ID_CONFIGURE_AUDIOOUTPUT
+        MENUITEM "&Player Options...\tCtrl+P",                 ID_CONFIGURE_PLAYEROPTIONS
+        MENUITEM "&MIDI Input...\tCtrl+Shift+M",               ID_CONFIGURE_MIDIINPUT
         MENUITEM SEPARATOR
-        MENUITEM "&Export Settings...\tCtrl+X",     ID_CONFIGURE_EXPORTSETTINGS
-        MENUITEM "&Import Settings...\tCtrl+Shift+I", ID_CONFIGURE_IMPORTSETTINGS
+        MENUITEM "&Export Settings...\tCtrl+X",                ID_CONFIGURE_EXPORTSETTINGS
+        MENUITEM "&Import Settings...\tCtrl+Shift+I",          ID_CONFIGURE_IMPORTSETTINGS
         MENUITEM SEPARATOR
         MENUITEM "&Restore Default Settings...\tCtrl+Shift+R", ID_CONFIGURE_RESTOREDEFAULTS
     END
     POPUP "&Tools"
     BEGIN
-        MENUITEM "&Channel Mixer...\tCtrl+C",       ID_TOOLS_CHANNELMIXER
-        MENUITEM "&Virtual Keyboard...\tCtrl+K",    ID_TOOLS_VKBD
-        MENUITEM "&Inject MIDI Message...\tCtrl+Shift+J", ID_TOOLS_INJECTMIDI
+        MENUITEM "&Channel Mixer...\tCtrl+C",                  ID_TOOLS_CHANNELMIXER
+        MENUITEM "&Virtual Keyboard...\tCtrl+K",               ID_TOOLS_VKBD
+        MENUITEM "&Inject MIDI Message...\tCtrl+Shift+J",      ID_TOOLS_INJECTMIDI
     END
     POPUP "&Reset"
     BEGIN
-        MENUITEM "All &Notes Off\tCtrl+N",          ID_RESET_ALLNOTESOFF
-        MENUITEM "All &Sounds Off\tCtrl+S",         ID_RESET_ALLSOUNDSOFF
-        MENUITEM "Reset &Controllers\tCtrl+Q",      ID_RESET_RESETCONTROLLERS
+        MENUITEM "All &Notes Off\tCtrl+N",                     ID_RESET_ALLNOTESOFF
+        MENUITEM "All &Sounds Off\tCtrl+S",                    ID_RESET_ALLSOUNDSOFF
+        MENUITEM "Reset &Controllers\tCtrl+Q",                 ID_RESET_RESETCONTROLLERS
         MENUITEM SEPARATOR
-        MENUITEM "&Panic\tF9",                      ID_RESET_PANIC
-        MENUITEM "&Reset\tF10",                     ID_RESET_RESET
+        MENUITEM "&Panic\tF9",                                 ID_RESET_PANIC
+        MENUITEM "&Reset\tF10",                                ID_RESET_RESET
     END
     POPUP "&Engine"
     BEGIN
-        MENUITEM "Reload &Configuration\tCtrl+Shift+G", ID_ENGINE_RELOADCONFIG
-        MENUITEM "Reload Current &MIDI File\tCtrl+Shift+F", ID_ENGINE_RELOADSMF
+        MENUITEM "Reload &Configuration\tCtrl+Shift+G",        ID_ENGINE_RELOADCONFIG
+        MENUITEM "Reload Current &MIDI File\tCtrl+Shift+F",    ID_ENGINE_RELOADSMF
         MENUITEM SEPARATOR
-        MENUITEM "&Force All Instruments to Load\tCtrl+F", ID_ENGINE_FORCEINSTRUMENTLOAD
+        MENUITEM "&Force All Instruments to Load\tCtrl+F",     ID_ENGINE_FORCEINSTRUMENTLOAD
         MENUITEM SEPARATOR
-        MENUITEM "Free Default &Instrument\tCtrl+D", ID_ENGINE_FREEDEFAULTINSTRUMENT
-        MENUITEM "&Unload Configuration\tCtrl+Shift+U", ID_ENGINE_UNLOADCONFIG
+        MENUITEM "Free Default &Instrument\tCtrl+D",           ID_ENGINE_FREEDEFAULTINSTRUMENT
+        MENUITEM "&Unload Configuration\tCtrl+Shift+U",        ID_ENGINE_UNLOADCONFIG
         MENUITEM SEPARATOR
-        MENUITEM "Restore &Default Settings\tCtrl+Shift+E", ID_ENGINE_RESTOREDEFAULTS
+        MENUITEM "Restore &Default Settings\tCtrl+Shift+E",    ID_ENGINE_RESTOREDEFAULTS
     END
     POPUP "&View"
     BEGIN
-        MENUITEM "&Status Bar\tCtrl+Y",             ID_VIEW_STATUSBAR
-        MENUITEM "See&k Bar\tCtrl+L",               ID_VIEW_SEEKBAR
-        MENUITEM "&Playlist View\tCtrl+Z",          ID_VIEW_PLAYLISTVIEW
+        MENUITEM "&Status Bar\tCtrl+Y",                        ID_VIEW_STATUSBAR
+        MENUITEM "See&k Bar\tCtrl+L",                          ID_VIEW_SEEKBAR
+        MENUITEM "&Playlist View\tCtrl+Z",                     ID_VIEW_PLAYLISTVIEW
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About...\tF1",                   ID_HELP_ABOUT
+        MENUITEM "&About...\tF1",                              ID_HELP_ABOUT
     END
 END
 
@@ -227,59 +227,59 @@ END
 
 IDR_ACCEL ACCELERATORS
 BEGIN
-    "O",            ID_FILE_OPEN,               VIRTKEY, CONTROL, NOINVERT
-    "A",            ID_FILE_ADDFILES,           VIRTKEY, CONTROL, NOINVERT
-    "A",            ID_FILE_ADDFOLDER,          VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "V",            ID_FILE_PASTE,              VIRTKEY, CONTROL, NOINVERT
-    "L",            ID_FILE_CLEARRECENTFILES,   VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "O",            ID_FILE_OPENPLAYLIST,       VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "S",            ID_FILE_SAVEPLAYLIST,       VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "U",            ID_FILE_UNLOAD,             VIRTKEY, CONTROL, NOINVERT
-    "C",            ID_FILE_CLEARPLAYLIST,      VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "W",            ID_FILE_CONVERTCURRENT,     VIRTKEY, CONTROL, NOINVERT
-    "B",            ID_FILE_BATCHCONVERT,       VIRTKEY, CONTROL, NOINVERT
-    VK_SPACE,       ID_PLAYBACK_PLAYPAUSE,      VIRTKEY, NOINVERT
-    VK_ESCAPE,      ID_PLAYBACK_STOP,           VIRTKEY, NOINVERT
-    VK_RIGHT,       ID_PLAYBACK_NEXTTRACK,      VIRTKEY, CONTROL, NOINVERT
-    VK_LEFT,        ID_PLAYBACK_PREVTRACK,      VIRTKEY, CONTROL, NOINVERT
-    VK_LEFT,        ID_PLAYBACK_FIRSTTRACK,     VIRTKEY, CONTROL, SHIFT, NOINVERT
-    VK_RIGHT,       ID_PLAYBACK_LASTTRACK,      VIRTKEY, CONTROL, SHIFT, NOINVERT
-    VK_RIGHT,       ID_SEEK_FORWARD,            VIRTKEY, NOINVERT
-    VK_LEFT,        ID_SEEK_BACK,               VIRTKEY, NOINVERT
-    "R",            ID_PLAYBACK_RESTART,        VIRTKEY, CONTROL, NOINVERT
-    "E",            ID_PLAYBACK_JUMPTOEND,      VIRTKEY, CONTROL, NOINVERT
-    "J",            ID_PLAYBACK_JUMPTOTIME,     VIRTKEY, CONTROL, NOINVERT
-    "T",            ID_PLAYBACK_SLEEPTIMER,     VIRTKEY, CONTROL, NOINVERT
-    "H",            ID_PLAYBACK_SHUFFLE,        VIRTKEY, CONTROL, NOINVERT
-    "M",            ID_PLAYBACK_MANAGEPLAYLIST, VIRTKEY, CONTROL, NOINVERT
-    "I",            ID_PLAYBACK_STATS,          VIRTKEY, CONTROL, NOINVERT
-    VK_UP,          ID_VOLUME_UP,               VIRTKEY, NOINVERT
-    VK_DOWN,        ID_VOLUME_DOWN,             VIRTKEY, NOINVERT
-    "G",            ID_CONFIGURE_TIMIDITY,      VIRTKEY, CONTROL, NOINVERT
-    "D",            ID_CONFIGURE_AUDIOOUTPUT,   VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "P",            ID_CONFIGURE_PLAYEROPTIONS, VIRTKEY, CONTROL, NOINVERT
-    "M",            ID_CONFIGURE_MIDIINPUT,     VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "X",            ID_CONFIGURE_EXPORTSETTINGS, VIRTKEY, CONTROL, NOINVERT
-    "I",            ID_CONFIGURE_IMPORTSETTINGS, VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "R",            ID_CONFIGURE_RESTOREDEFAULTS, VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "C",            ID_TOOLS_CHANNELMIXER,     VIRTKEY, CONTROL, NOINVERT
-    "K",            ID_TOOLS_VKBD,              VIRTKEY, CONTROL, NOINVERT
-    "J",            ID_TOOLS_INJECTMIDI,        VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "N",            ID_RESET_ALLNOTESOFF,       VIRTKEY, CONTROL, NOINVERT
-    "S",            ID_RESET_ALLSOUNDSOFF,      VIRTKEY, CONTROL, NOINVERT
-    "Q",            ID_RESET_RESETCONTROLLERS,  VIRTKEY, CONTROL, NOINVERT
-    VK_F9,          ID_RESET_PANIC,             VIRTKEY, NOINVERT
-    VK_F10,         ID_RESET_RESET,             VIRTKEY, NOINVERT
-    "G",            ID_ENGINE_RELOADCONFIG,     VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "F",            ID_ENGINE_RELOADSMF,        VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "F",            ID_ENGINE_FORCEINSTRUMENTLOAD, VIRTKEY, CONTROL, NOINVERT
+    "O",            ID_FILE_OPEN,                    VIRTKEY, CONTROL, NOINVERT
+    "A",            ID_FILE_ADDFILES,                VIRTKEY, CONTROL, NOINVERT
+    "A",            ID_FILE_ADDFOLDER,               VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "V",            ID_FILE_PASTE,                   VIRTKEY, CONTROL, NOINVERT
+    "L",            ID_FILE_CLEARRECENTFILES,        VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "O",            ID_FILE_OPENPLAYLIST,            VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "S",            ID_FILE_SAVEPLAYLIST,            VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "U",            ID_FILE_UNLOAD,                  VIRTKEY, CONTROL, NOINVERT
+    "C",            ID_FILE_CLEARPLAYLIST,           VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "W",            ID_FILE_CONVERTCURRENT,          VIRTKEY, CONTROL, NOINVERT
+    "B",            ID_FILE_BATCHCONVERT,            VIRTKEY, CONTROL, NOINVERT
+    VK_SPACE,       ID_PLAYBACK_PLAYPAUSE,           VIRTKEY, NOINVERT
+    VK_ESCAPE,      ID_PLAYBACK_STOP,                VIRTKEY, NOINVERT
+    VK_RIGHT,       ID_PLAYBACK_NEXTTRACK,           VIRTKEY, CONTROL, NOINVERT
+    VK_LEFT,        ID_PLAYBACK_PREVTRACK,           VIRTKEY, CONTROL, NOINVERT
+    VK_LEFT,        ID_PLAYBACK_FIRSTTRACK,          VIRTKEY, CONTROL, SHIFT, NOINVERT
+    VK_RIGHT,       ID_PLAYBACK_LASTTRACK,           VIRTKEY, CONTROL, SHIFT, NOINVERT
+    VK_RIGHT,       ID_SEEK_FORWARD,                 VIRTKEY, NOINVERT
+    VK_LEFT,        ID_SEEK_BACK,                    VIRTKEY, NOINVERT
+    "R",            ID_PLAYBACK_RESTART,             VIRTKEY, CONTROL, NOINVERT
+    "E",            ID_PLAYBACK_JUMPTOEND,           VIRTKEY, CONTROL, NOINVERT
+    "J",            ID_PLAYBACK_JUMPTOTIME,          VIRTKEY, CONTROL, NOINVERT
+    "T",            ID_PLAYBACK_SLEEPTIMER,          VIRTKEY, CONTROL, NOINVERT
+    "H",            ID_PLAYBACK_SHUFFLE,             VIRTKEY, CONTROL, NOINVERT
+    "M",            ID_PLAYBACK_MANAGEPLAYLIST,      VIRTKEY, CONTROL, NOINVERT
+    "I",            ID_PLAYBACK_STATS,               VIRTKEY, CONTROL, NOINVERT
+    VK_UP,          ID_VOLUME_UP,                    VIRTKEY, NOINVERT
+    VK_DOWN,        ID_VOLUME_DOWN,                  VIRTKEY, NOINVERT
+    "G",            ID_CONFIGURE_TIMIDITY,           VIRTKEY, CONTROL, NOINVERT
+    "D",            ID_CONFIGURE_AUDIOOUTPUT,        VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "P",            ID_CONFIGURE_PLAYEROPTIONS,      VIRTKEY, CONTROL, NOINVERT
+    "M",            ID_CONFIGURE_MIDIINPUT,          VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "X",            ID_CONFIGURE_EXPORTSETTINGS,     VIRTKEY, CONTROL, NOINVERT
+    "I",            ID_CONFIGURE_IMPORTSETTINGS,     VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "R",            ID_CONFIGURE_RESTOREDEFAULTS,    VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "C",            ID_TOOLS_CHANNELMIXER,           VIRTKEY, CONTROL, NOINVERT
+    "K",            ID_TOOLS_VKBD,                   VIRTKEY, CONTROL, NOINVERT
+    "J",            ID_TOOLS_INJECTMIDI,             VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "N",            ID_RESET_ALLNOTESOFF,            VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_RESET_ALLSOUNDSOFF,           VIRTKEY, CONTROL, NOINVERT
+    "Q",            ID_RESET_RESETCONTROLLERS,       VIRTKEY, CONTROL, NOINVERT
+    VK_F9,          ID_RESET_PANIC,                  VIRTKEY, NOINVERT
+    VK_F10,         ID_RESET_RESET,                  VIRTKEY, NOINVERT
+    "G",            ID_ENGINE_RELOADCONFIG,          VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "F",            ID_ENGINE_RELOADSMF,             VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "F",            ID_ENGINE_FORCEINSTRUMENTLOAD,   VIRTKEY, CONTROL, NOINVERT
     "D",            ID_ENGINE_FREEDEFAULTINSTRUMENT, VIRTKEY, CONTROL, NOINVERT
-    "U",            ID_ENGINE_UNLOADCONFIG,     VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "E",            ID_ENGINE_RESTOREDEFAULTS,  VIRTKEY, CONTROL, SHIFT, NOINVERT
-    "Y",            ID_VIEW_STATUSBAR,          VIRTKEY, CONTROL, NOINVERT
-    "L",            ID_VIEW_SEEKBAR,            VIRTKEY, CONTROL, NOINVERT
-    "Z",            ID_VIEW_PLAYLISTVIEW,       VIRTKEY, CONTROL, NOINVERT
-    VK_F1,          ID_HELP_ABOUT,              VIRTKEY, NOINVERT
+    "U",            ID_ENGINE_UNLOADCONFIG,          VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "E",            ID_ENGINE_RESTOREDEFAULTS,       VIRTKEY, CONTROL, SHIFT, NOINVERT
+    "Y",            ID_VIEW_STATUSBAR,               VIRTKEY, CONTROL, NOINVERT
+    "L",            ID_VIEW_SEEKBAR,                 VIRTKEY, CONTROL, NOINVERT
+    "Z",            ID_VIEW_PLAYLISTVIEW,            VIRTKEY, CONTROL, NOINVERT
+    VK_F1,          ID_HELP_ABOUT,                   VIRTKEY, NOINVERT
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -735,145 +735,145 @@ END
 
 STRINGTABLE DISCARDABLE
 BEGIN
-    IDS_APPTITLE            "Timidity MIDI Player"
-    IDS_WINDOWTITLEFMT      "%s - %s"
-    IDS_MUTEXFAILED         "Failed to create mutex."
-    IDS_COMFAILED           "Failed to initialize COM."
-    IDS_MEMFAILED           "Failed to allocate memory."
-    IDS_REGCLASSFAILED      "Failed to register window class."
-    IDS_CREATEWNDFAILED     "Failed to create main window."
-    IDS_ACCELFAILED         "Failed to load keyboard accelerators."
-    IDS_CTRLFAILED          "Failed to create one or more window controls."
-    IDS_SYNTHINITFAILED     "Failed to initialize the Timidity synthesizer.\nCheck your Timidity configuration."
-    IDS_ABOUTCAP            "About Timidity MIDI Player"
-    IDS_ABOUTTXT            "Copyright (C) 2024-2026 Datajake.\n\nThis program was written with the help of AI.\nTimidity library derived from MIDI Plug-in for GSPlayer by Y.Nagamidori.\n\nTimidity credits:\nTimidity 0.2i by Tuukka Toivonen.\nTimidity Win32 by Davide Moretti.\nTimidity Win95 by Nicolas Witczak.\n\nReverb engine derived from the OpenALSoft EAXReverb implementation."
-    IDS_ALREADYRUNNING      "Timidity MIDI Player is already running."
-    IDS_ALREADYRUNNINGQ     "Timidity MIDI Player is already running.\n\nLoad files into the existing instance?"
-    IDS_MIDFLT              "MIDI Files (*.mid;*.midi;*.kar)\0*.mid;*.midi;*.kar\0Everything (*.*)\0*.*\0\0"
-    IDS_MIDCAP              "Select MIDI Files"
-    IDS_OUTCAP              "Select Output Folder"
-    IDS_CFGFLT              "Timidity Configuration Files(*.CFG)\0*.CFG\0Everything (*.*)\0*.*\0\0"
-    IDS_CFGCAP              "Load Timidity Configuration"
-    IDS_INSTFLT             "Gravis Ultrasound Patch Files(*.PAT)\0*.PAT\0Everything (*.*)\0*.*\0\0"
-    IDS_INSTCAP             "Set Default Instrument"
-    IDS_WAVFLT              "WAV Files (*.wav)\0*.wav\0Everything (*.*)\0*.*\0\0"
-    IDS_WAVCAP              "Save WAV As"
-    IDS_M3UFLT              "M3U Playlist Files (*.m3u;*.m3u8)\0*.m3u;*.m3u8\0Everything (*.*)\0*.*\0\0"
-    IDS_M3UOPENCAP          "Open M3U Playlist"
-    IDS_M3USAVECAP          "Save M3U Playlist"
-    IDS_CSVFLT              "CSV Files (*.csv)\0*.csv\0Everything (*.*)\0*.*\0\0"
-    IDS_CSVCAP              "Save Results As"
-    IDS_SETTINGSFLT         "Settings Files (*.tpset)\0*.tpset\0Everything (*.*)\0*.*\0\0"
-    IDS_SETTINGSOPENCAP     "Import Player Settings"
-    IDS_SETTINGSSAVECAP     "Export Player Settings"
-    IDS_PLAYLISTLABEL       "Playlist"
-    IDS_PAUSELABEL          "&Pause\tSpace"
-    IDS_PLAYLABEL           "&Play\tSpace"
-    IDS_ALWAYSONTOPMENU     "Always on Top"
-    IDS_STATEPLAYING        "Playing"
-    IDS_STATEPAUSED         "Paused"
-    IDS_STATESTOPPED        "Stopped"
-    IDS_STATENOFILE         "No file loaded"
-    IDS_STATEMIDIIN         "MIDI Input Active"
-    IDS_STATUSTRACKFMT      "%s   %s / %s   (Track %d/%d)"
-    IDS_STATUSFMT           "%s   %s / %s"
-    IDS_VOICESFMT           "Voices: %d/%d   Vol: %d%%"
-    IDS_VOLFMT              "Vol: %d%%"
-    IDS_CPUFMT              "CPU: %.1f%%"
-    IDS_NOFILELOADED        "Nothing Loaded"
-    IDS_LOADFAILED          "Failed to load the MIDI file:\n%s"
-    IDS_WAVEOUTFAILED       "Failed to open the audio output device."
-    IDS_MIDIINFAILED        "Failed to open the MIDI input device."
-    IDS_CONFIGAPPLYFAILED   "Failed to apply the new Timidity configuration.\nThe previous configuration is still in use."
-    IDS_M3ULOADFAILED       "Failed to load the playlist. Check that the file contains at least one valid entry."
-    IDS_M3USAVEFAILED       "Failed to save the playlist."
-    IDS_M3UNOPLAYLIST       "The playlist is empty; there is nothing to save."
-    IDS_ADDQUEUETOBATCH     "There are %d files in the current playlist.\n\nAdd them to the batch converter's file list?"
+    IDS_APPTITLE                  "Timidity MIDI Player"
+    IDS_WINDOWTITLEFMT            "%s - %s"
+    IDS_MUTEXFAILED               "Failed to create mutex."
+    IDS_COMFAILED                 "Failed to initialize COM."
+    IDS_MEMFAILED                 "Failed to allocate memory."
+    IDS_REGCLASSFAILED            "Failed to register window class."
+    IDS_CREATEWNDFAILED           "Failed to create main window."
+    IDS_ACCELFAILED               "Failed to load keyboard accelerators."
+    IDS_CTRLFAILED                "Failed to create one or more window controls."
+    IDS_SYNTHINITFAILED           "Failed to initialize the Timidity synthesizer.\nCheck your Timidity configuration."
+    IDS_ABOUTCAP                  "About Timidity MIDI Player"
+    IDS_ABOUTTXT                  "Copyright (C) 2024-2026 Datajake.\n\nThis program was written with the help of AI.\nTimidity library derived from MIDI Plug-in for GSPlayer by Y.Nagamidori.\n\nTimidity credits:\nTimidity 0.2i by Tuukka Toivonen.\nTimidity Win32 by Davide Moretti.\nTimidity Win95 by Nicolas Witczak.\n\nReverb engine derived from the OpenALSoft EAXReverb implementation."
+    IDS_ALREADYRUNNING            "Timidity MIDI Player is already running."
+    IDS_ALREADYRUNNINGQ           "Timidity MIDI Player is already running.\n\nLoad files into the existing instance?"
+    IDS_MIDFLT                    "MIDI Files (*.mid;*.midi;*.kar)\0*.mid;*.midi;*.kar\0Everything (*.*)\0*.*\0\0"
+    IDS_MIDCAP                    "Select MIDI Files"
+    IDS_OUTCAP                    "Select Output Folder"
+    IDS_CFGFLT                    "Timidity Configuration Files(*.CFG)\0*.CFG\0Everything (*.*)\0*.*\0\0"
+    IDS_CFGCAP                    "Load Timidity Configuration"
+    IDS_INSTFLT                   "Gravis Ultrasound Patch Files(*.PAT)\0*.PAT\0Everything (*.*)\0*.*\0\0"
+    IDS_INSTCAP                   "Set Default Instrument"
+    IDS_WAVFLT                    "WAV Files (*.wav)\0*.wav\0Everything (*.*)\0*.*\0\0"
+    IDS_WAVCAP                    "Save WAV As"
+    IDS_M3UFLT                    "M3U Playlist Files (*.m3u;*.m3u8)\0*.m3u;*.m3u8\0Everything (*.*)\0*.*\0\0"
+    IDS_M3UOPENCAP                "Open M3U Playlist"
+    IDS_M3USAVECAP                "Save M3U Playlist"
+    IDS_CSVFLT                    "CSV Files (*.csv)\0*.csv\0Everything (*.*)\0*.*\0\0"
+    IDS_CSVCAP                    "Save Results As"
+    IDS_SETTINGSFLT               "Settings Files (*.tpset)\0*.tpset\0Everything (*.*)\0*.*\0\0"
+    IDS_SETTINGSOPENCAP           "Import Player Settings"
+    IDS_SETTINGSSAVECAP           "Export Player Settings"
+    IDS_PLAYLISTLABEL             "Playlist"
+    IDS_PAUSELABEL                "&Pause\tSpace"
+    IDS_PLAYLABEL                 "&Play\tSpace"
+    IDS_ALWAYSONTOPMENU           "Always on Top"
+    IDS_STATEPLAYING              "Playing"
+    IDS_STATEPAUSED               "Paused"
+    IDS_STATESTOPPED              "Stopped"
+    IDS_STATENOFILE               "No file loaded"
+    IDS_STATEMIDIIN               "MIDI Input Active"
+    IDS_STATUSTRACKFMT            "%s   %s / %s   (Track %d/%d)"
+    IDS_STATUSFMT                 "%s   %s / %s"
+    IDS_VOICESFMT                 "Voices: %d/%d   Vol: %d%%"
+    IDS_VOLFMT                    "Vol: %d%%"
+    IDS_CPUFMT                    "CPU: %.1f%%"
+    IDS_NOFILELOADED              "Nothing Loaded"
+    IDS_LOADFAILED                "Failed to load the MIDI file:\n%s"
+    IDS_WAVEOUTFAILED             "Failed to open the audio output device."
+    IDS_MIDIINFAILED              "Failed to open the MIDI input device."
+    IDS_CONFIGAPPLYFAILED         "Failed to apply the new Timidity configuration.\nThe previous configuration is still in use."
+    IDS_M3ULOADFAILED             "Failed to load the playlist. Check that the file contains at least one valid entry."
+    IDS_M3USAVEFAILED             "Failed to save the playlist."
+    IDS_M3UNOPLAYLIST             "The playlist is empty; there is nothing to save."
+    IDS_ADDQUEUETOBATCH           "There are %d files in the current playlist.\n\nAdd them to the batch converter's file list?"
     IDS_CONFIRMDELETEPLAYLISTITEM "Remove ""%s"" from the playlist?"
-    IDS_CMDLINE_NOFILES     "No valid files were found on the command line."
-    IDS_STATSFILE           "File: %s"
-    IDS_STATSNONE           "(none)"
-    IDS_STATSTITLE          "Title: %s"
-    IDS_STATSCOPYRIGHT      "Copyright: %s"
-    IDS_STATSEVENTS         "Number of Events: %d"
-    IDS_STATSDURATION       "Duration: %s"
-    IDS_STATSPOSITION       "Current Position: %s"
-    IDS_STATSBITRATE        "Bitrate: %d KBPS"
-    IDS_STATSVOICES         "Active Voices: %d / %d"
-    IDS_STATSLOST           "Lost Notes: %d"
-    IDS_STATSCUT            "Cut Notes: %d"
-    IDS_STATSCPU            "CPU Load: %.1f%%"
-    IDS_JUMPTIMEFORMAT      "Please enter a time in hh:mm:ss format."
-    IDS_SLEEPMINUTESFORMAT  "Please enter a whole number of minutes (0 to cancel)."
-    IDS_RECENTEMPTY         "(Empty)"
-    IDS_WAVEMAPPER          "System Default (Wave Mapper)"
-    IDS_MIDIINMAPPER        "System Default (MIDI Mapper)"
-    IDS_UNKNOWNDEVICE       "(unknown device)"
-    IDS_FMT_8BITINT         "8-bit Integer"
-    IDS_FMT_16BITINT        "16-bit Integer"
-    IDS_FMT_24BITINT        "24-bit Integer"
-    IDS_FMT_32BITINT        "32-bit Integer"
-    IDS_FMT_32BITFLOAT      "32-bit Float"
-    IDS_FMT_64BITFLOAT      "64-bit Float"
-    IDS_FMT_8BITULAW        "8-bit uLaw"
-    IDS_CONVERTINGWAVFMT    "Converting to WAV... %d%%"
-    IDS_QUICKCONVERTDONE    "Conversion complete.\n\nSaved to:\n%s"
-    IDS_QUICKCONVERTINPROGRESS "A conversion to WAV is in progress.\n\nPlease wait for it to finish before closing."
-    IDS_QUICKCONVERTBUSY    "A conversion to WAV is already in progress.\n\nPlease wait for it to finish before starting a batch conversion."
-    IDS_CONVERTCURRENTBUSY  "A batch conversion is already in progress.\n\nPlease wait for it to finish before converting the current file."
-    IDS_BATCHCONVERTERBUSY  "A batch conversion is already in progress.\n\nPlease wait for it to finish before adding more files to the batch converter."
-    IDS_QC_SYNTHFAILED      "Failed to initialize the Timidity synthesizer."
-    IDS_QC_LOADFAILED       "Failed to load the MIDI file."
-    IDS_QC_CREATEFAILED     "Failed to create the output file."
-    IDS_QC_OUTOFMEMORY      "Out of memory."
-    IDS_QC_WRITEFAILED      "Failed while writing the output file."
-    IDS_NOFILES             "Please add at least one MIDI file to convert."
-    IDS_CREATEDIR           "The output folder\n%s\ndoes not exist.\n\nCreate it?"
-    IDS_CREATEDIRFAIL       "Failed to create the output folder\n%s."
-    IDS_SUMMARY             "Converted %d of %d file(s).\n%d failed.\n%d skipped (already existed).\n\nTotal lost notes: %d.\nTotal cut notes: %d.\n\nAverage speed: %.2fx realtime."
-    IDS_BATCHINITFAILED     "Failed to initialize the batch converter."
-    IDS_BATCHCONVERTINPROGRESS "A batch conversion is in progress.\n\nPlease wait for it to finish, or cancel it, before closing."
-    IDS_CANCELBTN           "&Cancel"
-    IDS_CONVERTBTN          "&Convert"
-    IDS_CONVERTINGSTATUSFMT "Converting %d of %d: %s (%d%%)"
-    IDS_OUTDIRSAVED         "Default output folder saved."
-    IDS_RESULT_LOADFAILED   " - Failed to load"
-    IDS_RESULT_WRITEFAILED  " - Failed to write output (Lost: %d, Cut: %d)"
-    IDS_RESULT_SKIPPED      " - Skipped (output already exists)"
-    IDS_RESULT_LOSTCUT      " - Lost: %d, Cut: %d"
-    IDS_RESULT_SPEED        ", Speed: %.2fx realtime"
-    IDS_RESULT_TITLE        " | Title: %s"
-    IDS_RESULT_COPYRIGHT    " | Copyright: %s"
-    IDS_RESULT_DURATION     " | Duration: %s"
-    IDS_RESULT_EVENTS       " | Number of Events: %d"
-    IDS_RESULT_BITRATE      " | Bitrate: %d KBPS"
-    IDS_CSVHEADER           "File,Result,Title,Copyright,Duration,NumEvents,Bitrate (KBPS),Lost Notes,Cut Notes,Speed (x realtime)"
-    IDS_CSVSAVEFAILED       "Failed to save the CSV file."
-    IDS_CSVSAVED            "Results saved to CSV."
-    IDS_OUTCOME_CONVERTED   "Converted"
-    IDS_OUTCOME_LOADFAILED  "Load Failed"
-    IDS_OUTCOME_WRITEFAILED "Write Failed"
-    IDS_OUTCOME_SKIPPED     "Skipped"
-    IDS_OUTCOME_PENDING     "Not Converted"
-    IDS_TRAYRESTORE         "R&estore"
-    IDS_TRAYEXIT            "E&xit"
-    IDS_TRAYPANIC           "&Panic"
-    IDS_TRAYRESET           "&Reset"
-    IDS_INJECT_NOTEOFF      "Note Off"
-    IDS_INJECT_NOTEON       "Note On"
-    IDS_INJECT_POLYAFTERTOUCH "Polyphonic Aftertouch"
-    IDS_INJECT_CONTROLCHANGE "Control Change"
-    IDS_INJECT_PROGRAMCHANGE "Program Change"
-    IDS_INJECT_PITCHBEND    "Pitch Bend"
-    IDS_CONFIRMRESTOREDEFAULTS "This will delete all player settings from the registry and restore the defaults.\n\nThis cannot be undone. Continue?"
-    IDS_SETTINGSRESTORED    "Player settings have been restored to their defaults.\n\nPlease restart the application for the changes to take full effect."
-    IDS_CONFIRMIMPORTSETTINGS "This will overwrite your current player settings with the ones in the selected file.\n\nThis cannot be undone. Continue?"
-    IDS_SETTINGSIMPORTED    "Player settings have been imported.\n\nPlease restart the application for the changes to take full effect."
-    IDS_SETTINGSEXPORTED    "Player settings have been exported successfully."
-    IDS_DELETESETTINGSFAILED "Failed to delete the player settings."
-    IDS_EXPORTSETTINGSFAILED "Failed to export the player settings."
-    IDS_IMPORTSETTINGSFAILED "Failed to import the player settings.\nThe file may be invalid or corrupted."
-    IDS_ADDFOLDERCAP        "Select a Folder to Add"
+    IDS_CMDLINE_NOFILES           "No valid files were found on the command line."
+    IDS_STATSFILE                 "File: %s"
+    IDS_STATSNONE                 "(none)"
+    IDS_STATSTITLE                "Title: %s"
+    IDS_STATSCOPYRIGHT            "Copyright: %s"
+    IDS_STATSEVENTS               "Number of Events: %d"
+    IDS_STATSDURATION             "Duration: %s"
+    IDS_STATSPOSITION             "Current Position: %s"
+    IDS_STATSBITRATE              "Bitrate: %d KBPS"
+    IDS_STATSVOICES               "Active Voices: %d / %d"
+    IDS_STATSLOST                 "Lost Notes: %d"
+    IDS_STATSCUT                  "Cut Notes: %d"
+    IDS_STATSCPU                  "CPU Load: %.1f%%"
+    IDS_JUMPTIMEFORMAT            "Please enter a time in hh:mm:ss format."
+    IDS_SLEEPMINUTESFORMAT        "Please enter a whole number of minutes (0 to cancel)."
+    IDS_RECENTEMPTY               "(Empty)"
+    IDS_WAVEMAPPER                "System Default (Wave Mapper)"
+    IDS_MIDIINMAPPER              "System Default (MIDI Mapper)"
+    IDS_UNKNOWNDEVICE             "(unknown device)"
+    IDS_FMT_8BITINT               "8-bit Integer"
+    IDS_FMT_16BITINT              "16-bit Integer"
+    IDS_FMT_24BITINT              "24-bit Integer"
+    IDS_FMT_32BITINT              "32-bit Integer"
+    IDS_FMT_32BITFLOAT            "32-bit Float"
+    IDS_FMT_64BITFLOAT            "64-bit Float"
+    IDS_FMT_8BITULAW              "8-bit uLaw"
+    IDS_CONVERTINGWAVFMT          "Converting to WAV... %d%%"
+    IDS_QUICKCONVERTDONE          "Conversion complete.\n\nSaved to:\n%s"
+    IDS_QUICKCONVERTINPROGRESS    "A conversion to WAV is in progress.\n\nPlease wait for it to finish before closing."
+    IDS_QUICKCONVERTBUSY          "A conversion to WAV is already in progress.\n\nPlease wait for it to finish before starting a batch conversion."
+    IDS_CONVERTCURRENTBUSY        "A batch conversion is already in progress.\n\nPlease wait for it to finish before converting the current file."
+    IDS_BATCHCONVERTERBUSY        "A batch conversion is already in progress.\n\nPlease wait for it to finish before adding more files to the batch converter."
+    IDS_QC_SYNTHFAILED            "Failed to initialize the Timidity synthesizer."
+    IDS_QC_LOADFAILED             "Failed to load the MIDI file."
+    IDS_QC_CREATEFAILED           "Failed to create the output file."
+    IDS_QC_OUTOFMEMORY            "Out of memory."
+    IDS_QC_WRITEFAILED            "Failed while writing the output file."
+    IDS_NOFILES                   "Please add at least one MIDI file to convert."
+    IDS_CREATEDIR                 "The output folder\n%s\ndoes not exist.\n\nCreate it?"
+    IDS_CREATEDIRFAIL             "Failed to create the output folder\n%s."
+    IDS_SUMMARY                   "Converted %d of %d file(s).\n%d failed.\n%d skipped (already existed).\n\nTotal lost notes: %d.\nTotal cut notes: %d.\n\nAverage speed: %.2fx realtime."
+    IDS_BATCHINITFAILED           "Failed to initialize the batch converter."
+    IDS_BATCHCONVERTINPROGRESS    "A batch conversion is in progress.\n\nPlease wait for it to finish, or cancel it, before closing."
+    IDS_CANCELBTN                 "&Cancel"
+    IDS_CONVERTBTN                "&Convert"
+    IDS_CONVERTINGSTATUSFMT       "Converting %d of %d: %s (%d%%)"
+    IDS_OUTDIRSAVED               "Default output folder saved."
+    IDS_RESULT_LOADFAILED         " - Failed to load"
+    IDS_RESULT_WRITEFAILED        " - Failed to write output (Lost: %d, Cut: %d)"
+    IDS_RESULT_SKIPPED            " - Skipped (output already exists)"
+    IDS_RESULT_LOSTCUT            " - Lost: %d, Cut: %d"
+    IDS_RESULT_SPEED              ", Speed: %.2fx realtime"
+    IDS_RESULT_TITLE              " | Title: %s"
+    IDS_RESULT_COPYRIGHT          " | Copyright: %s"
+    IDS_RESULT_DURATION           " | Duration: %s"
+    IDS_RESULT_EVENTS             " | Number of Events: %d"
+    IDS_RESULT_BITRATE            " | Bitrate: %d KBPS"
+    IDS_CSVHEADER                 "File,Result,Title,Copyright,Duration,NumEvents,Bitrate (KBPS),Lost Notes,Cut Notes,Speed (x realtime)"
+    IDS_CSVSAVEFAILED             "Failed to save the CSV file."
+    IDS_CSVSAVED                  "Results saved to CSV."
+    IDS_OUTCOME_CONVERTED         "Converted"
+    IDS_OUTCOME_LOADFAILED        "Load Failed"
+    IDS_OUTCOME_WRITEFAILED       "Write Failed"
+    IDS_OUTCOME_SKIPPED           "Skipped"
+    IDS_OUTCOME_PENDING           "Not Converted"
+    IDS_TRAYRESTORE               "R&estore"
+    IDS_TRAYEXIT                  "E&xit"
+    IDS_TRAYPANIC                 "&Panic"
+    IDS_TRAYRESET                 "&Reset"
+    IDS_INJECT_NOTEOFF            "Note Off"
+    IDS_INJECT_NOTEON             "Note On"
+    IDS_INJECT_POLYAFTERTOUCH     "Polyphonic Aftertouch"
+    IDS_INJECT_CONTROLCHANGE      "Control Change"
+    IDS_INJECT_PROGRAMCHANGE      "Program Change"
+    IDS_INJECT_PITCHBEND          "Pitch Bend"
+    IDS_CONFIRMRESTOREDEFAULTS    "This will delete all player settings from the registry and restore the defaults.\n\nThis cannot be undone. Continue?"
+    IDS_SETTINGSRESTORED          "Player settings have been restored to their defaults.\n\nPlease restart the application for the changes to take full effect."
+    IDS_CONFIRMIMPORTSETTINGS     "This will overwrite your current player settings with the ones in the selected file.\n\nThis cannot be undone. Continue?"
+    IDS_SETTINGSIMPORTED          "Player settings have been imported.\n\nPlease restart the application for the changes to take full effect."
+    IDS_SETTINGSEXPORTED          "Player settings have been exported successfully."
+    IDS_DELETESETTINGSFAILED      "Failed to delete the player settings."
+    IDS_EXPORTSETTINGSFAILED      "Failed to export the player settings."
+    IDS_IMPORTSETTINGSFAILED      "Failed to import the player settings.\nThe file may be invalid or corrupted."
+    IDS_ADDFOLDERCAP              "Select a Folder to Add"
     IDS_CONFIRMSAVEPLAYLISTONEXIT "Your playlist may not be saved automatically because the player settings were recently imported or restored.\n\nDo you want to save your playlist before exiting?"
 END
 
