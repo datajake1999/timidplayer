@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <tchar.h>
 #include <time.h>
+#include <windowsx.h>
 
 #include "../timidity/timid.h"
 #include "../timidity/config.h"

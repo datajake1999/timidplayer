@@ -167,6 +167,48 @@ static void ShowTrayMenu(HWND hWnd)
 	DestroyMenu(hMenu);
 }
 
+static BOOL ShowContextMenu(HWND hWnd, LPARAM lParam)
+{
+	int xPos, yPos;
+	HMENU hMenu;
+	TCHAR playLabel[64];
+	TCHAR removeLabel[64];
+	TCHAR statsLabel[64];
+	TCHAR convertLabel[64];
+	if (!g_App->bFileLoaded)
+	{
+		return FALSE;
+	}
+	hMenu = CreatePopupMenu();
+	if (!hMenu)
+	{
+		return FALSE;
+	}
+	LoadAppString(g_App->hInst, IDS_CONTEXTPLAY, playLabel, 64);
+	LoadAppString(g_App->hInst, IDS_CONTEXTREMOVE, removeLabel, 64);
+	LoadAppString(g_App->hInst, IDS_CONTEXTSTATS, statsLabel, 64);
+	LoadAppString(g_App->hInst, IDS_CONTEXTCONVERT, convertLabel, 64);
+	AppendMenu(hMenu, MF_STRING, ID_CONTEXT_PLAY, playLabel);
+	AppendMenu(hMenu, MF_STRING, ID_CONTEXT_REMOVE, removeLabel);
+	AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
+	AppendMenu(hMenu, MF_STRING, ID_PLAYBACK_STATS, statsLabel);
+	AppendMenu(hMenu, MF_STRING, ID_FILE_CONVERTCURRENT, convertLabel);
+	xPos = GET_X_LPARAM(lParam);
+	yPos = GET_Y_LPARAM(lParam);
+	if (xPos == -1 && yPos == -1)
+	{
+		POINT pt = { 0, 0 };
+		ClientToScreen(hWnd, &pt);
+		xPos = pt.x;
+		yPos = pt.y;
+	}
+	SetForegroundWindow(hWnd);
+	TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_TOPALIGN, xPos, yPos, 0, hWnd, NULL);
+	PostMessage(hWnd, WM_NULL, 0, 0);
+	DestroyMenu(hMenu);
+	return TRUE;
+}
+
 static UINT MenuEnableFlag(BOOL enabled)
 {
 	if (enabled)
@@ -1250,6 +1292,32 @@ LRESULT CALLBACK PlayerWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			ShowWindow(hWnd, SW_RESTORE);
 			SetForegroundWindow(hWnd);
 			return 0;
+		case ID_CONTEXT_PLAY:
+			{
+				int idx = g_App->playlistIndex;
+				if (idx >= 0 && idx < g_App->playlistCount)
+				{
+					PlayPlaylistEntryAt(hWnd, idx);
+				}
+			}
+			return 0;
+		case ID_CONTEXT_REMOVE:
+			{
+				int idx = g_App->playlistIndex;
+				if (idx >= 0 && idx < g_App->playlistCount)
+				{
+					BOOL bRemove = TRUE;
+					if (g_App->bConfirmPlaylistDelete)
+					{
+						bRemove = (ShowFormattedAppMessage(hWnd, IDS_CONFIRMDELETEPLAYLISTITEM, MB_ICONQUESTION | MB_YESNO, GetBaseName(g_App->playlist[idx].path)) == IDYES);
+					}
+					if (bRemove)
+					{
+						RemovePlaylistItemAt(hWnd, idx);
+					}
+				}
+			}
+			return 0;
 		}
 		return 0;
 	case WM_SYSCOMMAND:
@@ -1318,6 +1386,12 @@ LRESULT CALLBACK PlayerWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			return 0;
 		}
 		return 0;
+	case WM_CONTEXTMENU:
+		if (ShowContextMenu(hWnd, lParam))
+		{
+			return 0;
+		}
+		break;
 	case MM_MIM_DATA:
 		HandleMidiInShortMessage((DWORD_PTR)lParam);
 		return 0;

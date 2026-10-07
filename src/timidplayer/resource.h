@@ -144,22 +144,26 @@
 #define IDS_TRAYEXIT                    522
 #define IDS_TRAYPANIC                   523
 #define IDS_TRAYRESET                   524
-#define IDS_INJECT_NOTEOFF              525
-#define IDS_INJECT_NOTEON               526
-#define IDS_INJECT_POLYAFTERTOUCH       527
-#define IDS_INJECT_CONTROLCHANGE        528
-#define IDS_INJECT_PROGRAMCHANGE        529
-#define IDS_INJECT_PITCHBEND            530
-#define IDS_CONFIRMRESTOREDEFAULTS      531
-#define IDS_SETTINGSRESTORED            532
-#define IDS_CONFIRMIMPORTSETTINGS       533
-#define IDS_SETTINGSIMPORTED            534
-#define IDS_SETTINGSEXPORTED            535
-#define IDS_DELETESETTINGSFAILED        536
-#define IDS_EXPORTSETTINGSFAILED        537
-#define IDS_IMPORTSETTINGSFAILED        538
-#define IDS_ADDFOLDERCAP                539
-#define IDS_CONFIRMSAVEPLAYLISTONEXIT   540
+#define IDS_CONTEXTPLAY                 525
+#define IDS_CONTEXTREMOVE               526
+#define IDS_CONTEXTSTATS                527
+#define IDS_CONTEXTCONVERT              528
+#define IDS_INJECT_NOTEOFF              529
+#define IDS_INJECT_NOTEON               530
+#define IDS_INJECT_POLYAFTERTOUCH       531
+#define IDS_INJECT_CONTROLCHANGE        532
+#define IDS_INJECT_PROGRAMCHANGE        533
+#define IDS_INJECT_PITCHBEND            534
+#define IDS_CONFIRMRESTOREDEFAULTS      535
+#define IDS_SETTINGSRESTORED            536
+#define IDS_CONFIRMIMPORTSETTINGS       537
+#define IDS_SETTINGSIMPORTED            538
+#define IDS_SETTINGSEXPORTED            539
+#define IDS_DELETESETTINGSFAILED        540
+#define IDS_EXPORTSETTINGSFAILED        541
+#define IDS_IMPORTSETTINGSFAILED        542
+#define IDS_ADDFOLDERCAP                543
+#define IDS_CONFIRMSAVEPLAYLISTONEXIT   544
 #ifndef IDC_STATIC
 #define IDC_STATIC                      -1
 #endif
@@ -403,13 +407,15 @@
 #define ID_VIEW_PLAYLISTVIEW            2065
 #define ID_HELP_ABOUT                   2066
 #define ID_TRAY_RESTORE                 2067
+#define ID_CONTEXT_PLAY                 2068
+#define ID_CONTEXT_REMOVE               2069
 
 // Next default values for new objects
 //
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        316
-#define _APS_NEXT_COMMAND_VALUE         2068
+#define _APS_NEXT_COMMAND_VALUE         2070
 #define _APS_NEXT_CONTROL_VALUE         1197
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
