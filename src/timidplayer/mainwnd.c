@@ -167,18 +167,26 @@ static void ShowTrayMenu(HWND hWnd)
 	DestroyMenu(hMenu);
 }
 
-static BOOL ShowContextMenu(HWND hWnd, LPARAM lParam)
+static BOOL ShowContextMenu(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
+	HWND hFocus = (HWND)wParam;
 	int xPos, yPos;
 	HMENU hMenu;
 	TCHAR playLabel[64];
 	TCHAR removeLabel[64];
-	TCHAR jumpLabel[64];
-	TCHAR statsLabel[64];
-	TCHAR convertLabel[64];
-	if (!g_App->bFileLoaded)
+	if (hFocus == g_App->hPlaylistView)
 	{
-		return FALSE;
+		if (g_App->playlistCount == 0)
+		{
+			return FALSE;
+		}
+	}
+	else
+	{
+		if (!g_App->bFileLoaded)
+		{
+			return FALSE;
+		}
 	}
 	hMenu = CreatePopupMenu();
 	if (!hMenu)
@@ -187,16 +195,22 @@ static BOOL ShowContextMenu(HWND hWnd, LPARAM lParam)
 	}
 	LoadAppString(g_App->hInst, IDS_CONTEXTPLAY, playLabel, 64);
 	LoadAppString(g_App->hInst, IDS_CONTEXTREMOVE, removeLabel, 64);
-	LoadAppString(g_App->hInst, IDS_CONTEXTJUMPTOTIME, jumpLabel, 64);
-	LoadAppString(g_App->hInst, IDS_CONTEXTSTATS, statsLabel, 64);
-	LoadAppString(g_App->hInst, IDS_CONTEXTCONVERT, convertLabel, 64);
 	AppendMenu(hMenu, MF_STRING, ID_CONTEXT_PLAY, playLabel);
 	AppendMenu(hMenu, MF_STRING, ID_CONTEXT_REMOVE, removeLabel);
-	AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
-	AppendMenu(hMenu, MF_STRING, ID_PLAYBACK_JUMPTOTIME, jumpLabel);
-	AppendMenu(hMenu, MF_STRING, ID_PLAYBACK_STATS, statsLabel);
-	AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
-	AppendMenu(hMenu, MF_STRING, ID_FILE_CONVERTCURRENT, convertLabel);
+	if (hFocus != g_App->hPlaylistView)
+	{
+		TCHAR jumpLabel[64];
+		TCHAR statsLabel[64];
+		TCHAR convertLabel[64];
+		LoadAppString(g_App->hInst, IDS_CONTEXTJUMPTOTIME, jumpLabel, 64);
+		LoadAppString(g_App->hInst, IDS_CONTEXTSTATS, statsLabel, 64);
+		LoadAppString(g_App->hInst, IDS_CONTEXTCONVERT, convertLabel, 64);
+		AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
+		AppendMenu(hMenu, MF_STRING, ID_PLAYBACK_JUMPTOTIME, jumpLabel);
+		AppendMenu(hMenu, MF_STRING, ID_PLAYBACK_STATS, statsLabel);
+		AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
+		AppendMenu(hMenu, MF_STRING, ID_FILE_CONVERTCURRENT, convertLabel);
+	}
 	xPos = GET_X_LPARAM(lParam);
 	yPos = GET_Y_LPARAM(lParam);
 	if (xPos == -1 && yPos == -1)
@@ -1298,7 +1312,15 @@ LRESULT CALLBACK PlayerWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			return 0;
 		case ID_CONTEXT_PLAY:
 			{
-				int idx = g_App->playlistIndex;
+				int idx;
+				if (GetFocus() == g_App->hPlaylistView)
+				{
+					idx = GetListViewCurSel(g_App->hPlaylistView);
+				}
+				else
+				{
+					idx = g_App->playlistIndex;
+				}
 				if (idx >= 0 && idx < g_App->playlistCount)
 				{
 					PlayPlaylistEntryAt(hWnd, idx);
@@ -1311,7 +1333,15 @@ LRESULT CALLBACK PlayerWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			return 0;
 		case ID_CONTEXT_REMOVE:
 			{
-				int idx = g_App->playlistIndex;
+				int idx;
+				if (GetFocus() == g_App->hPlaylistView)
+				{
+					idx = GetListViewCurSel(g_App->hPlaylistView);
+				}
+				else
+				{
+					idx = g_App->playlistIndex;
+				}
 				if (idx >= 0 && idx < g_App->playlistCount)
 				{
 					BOOL bRemove = TRUE;
@@ -1395,7 +1425,7 @@ LRESULT CALLBACK PlayerWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		}
 		return 0;
 	case WM_CONTEXTMENU:
-		if (ShowContextMenu(hWnd, lParam))
+		if (ShowContextMenu(hWnd, wParam, lParam))
 		{
 			return 0;
 		}
