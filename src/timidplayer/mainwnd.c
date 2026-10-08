@@ -176,7 +176,7 @@ static BOOL ShowContextMenu(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	TCHAR removeLabel[64];
 	if (hFocus == g_App->hPlaylistView)
 	{
-		if (g_App->playlistCount == 0)
+		if (g_App->playlistCount == 0 || GetListViewCurSel(g_App->hPlaylistView) == -1)
 		{
 			return FALSE;
 		}
