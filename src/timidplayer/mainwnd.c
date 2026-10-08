@@ -1298,6 +1298,10 @@ LRESULT CALLBACK PlayerWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 				if (idx >= 0 && idx < g_App->playlistCount)
 				{
 					PlayPlaylistEntryAt(hWnd, idx);
+					if (!g_App->bAutoStartPlayback && g_App->state == PLAYER_STOPPED)
+					{
+						TogglePlayPause(hWnd);
+					}
 				}
 			}
 			return 0;
