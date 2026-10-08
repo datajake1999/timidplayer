@@ -391,6 +391,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 					if (idx >= 0 && idx < g_App->playlistCount)
 					{
 						PlayPlaylistEntryAt(g_App->hPlayerWnd, idx);
+						if (!g_App->bAutoStartPlayback && g_App->state == PLAYER_STOPPED)
+						{
+							TogglePlayPause(g_App->hPlayerWnd);
+						}
 					}
 				}
 				continue;
