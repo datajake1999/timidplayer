@@ -861,6 +861,7 @@ BEGIN
     IDS_TRAYRESET                 "&Reset"
     IDS_CONTEXTPLAY               "&Play"
     IDS_CONTEXTREMOVE             "&Remove from Playlist"
+    IDS_CONTEXTJUMPTOTIME         "&Jump to Time..."
     IDS_CONTEXTSTATS              "&Statistics..."
     IDS_CONTEXTCONVERT            "&Convert to WAV..."
     IDS_INJECT_NOTEOFF            "Note Off"

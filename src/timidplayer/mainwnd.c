@@ -173,6 +173,7 @@ static BOOL ShowContextMenu(HWND hWnd, LPARAM lParam)
 	HMENU hMenu;
 	TCHAR playLabel[64];
 	TCHAR removeLabel[64];
+	TCHAR jumpLabel[64];
 	TCHAR statsLabel[64];
 	TCHAR convertLabel[64];
 	if (!g_App->bFileLoaded)
@@ -186,12 +187,15 @@ static BOOL ShowContextMenu(HWND hWnd, LPARAM lParam)
 	}
 	LoadAppString(g_App->hInst, IDS_CONTEXTPLAY, playLabel, 64);
 	LoadAppString(g_App->hInst, IDS_CONTEXTREMOVE, removeLabel, 64);
+	LoadAppString(g_App->hInst, IDS_CONTEXTJUMPTOTIME, jumpLabel, 64);
 	LoadAppString(g_App->hInst, IDS_CONTEXTSTATS, statsLabel, 64);
 	LoadAppString(g_App->hInst, IDS_CONTEXTCONVERT, convertLabel, 64);
 	AppendMenu(hMenu, MF_STRING, ID_CONTEXT_PLAY, playLabel);
 	AppendMenu(hMenu, MF_STRING, ID_CONTEXT_REMOVE, removeLabel);
 	AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
+	AppendMenu(hMenu, MF_STRING, ID_PLAYBACK_JUMPTOTIME, jumpLabel);
 	AppendMenu(hMenu, MF_STRING, ID_PLAYBACK_STATS, statsLabel);
+	AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
 	AppendMenu(hMenu, MF_STRING, ID_FILE_CONVERTCURRENT, convertLabel);
 	xPos = GET_X_LPARAM(lParam);
 	yPos = GET_Y_LPARAM(lParam);
