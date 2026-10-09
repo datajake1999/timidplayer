@@ -1354,7 +1354,7 @@ static void PlaySelectedPlaylistMgrEntry(HWND hWnd)
 	{
 		return;
 	}
-	PlayPlaylistEntryAt(g_App->hPlayerWnd, g_App->plMgrFilterMap[visIdx]);
+	PlayEntryAndStart(g_App->hPlayerWnd, g_App->plMgrFilterMap[visIdx]);
 }
 
 static void UpdatePlaylistMgrMoveButtons(HWND hWnd)
