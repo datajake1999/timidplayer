@@ -12,7 +12,7 @@ When the application is launched for the first time, an error will pop up if the
 
 ## The Main Window
 By default, the main window shows a status bar, seek bar, and playlist view. When the playlist view is enabled, pressing tab shifts focus to the list, and pressing tab again shifts focus back to the main window. When the list view is in focus, navigation keys are intercepted by the list view control. Pressing enter on a selected list item plays it, and pressing delete removes it from the playlist. The application can also be moved to the top of the z-order by enabling the Always On Top option in the system menu.
-A context menu is available as well, and the available options depend on the focused control. When the playlist view is in focus, the menu options are relevant to the currently selected item. Otherwise, the menu options are relevant to the currently loaded file.
+A context menu is available as well, and the available options depend on the control that was right-clicked, or the control that currently has keyboard focus. When the control is the playlist view, the menu options are relevant to the selected item. In all other cases, the menu options are relevant to the currently loaded file.
 
 ## Converting to WAV
 To render the currently loaded MIDI file to a WAV file, Select Convert to WAV from the file menu. While the conversion is in progress, the status bar is updated with the current percentage. When the conversion is done, a message box will pop up and display the full path to the output file.
