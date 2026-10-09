@@ -180,6 +180,7 @@ static BOOL AllocateGlobalBuffers(void)
 	ZeroMemory(g_App->playlist, sizeof(FileEntry) * MAX_PLAYLIST);
 	ZeroMemory(g_App->waveHdr, sizeof(WAVEHDR) * MAX_PLAYER_CHUNKS);
 	g_App->playlistIndex = -1;
+	g_App->ctxTargetIdx = -1;
 	g_App->outputDeviceId = WAVE_MAPPER;
 	g_App->pendingSeekMs = -1;
 	return TRUE;
@@ -386,34 +387,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
 				SetFocus(g_App->hPlayerWnd);
 				continue;
 			case VK_RETURN:
-				{
-					int idx = GetListViewCurSel(g_App->hPlaylistView);
-					if (idx >= 0 && idx < g_App->playlistCount)
-					{
-						PlayPlaylistEntryAt(g_App->hPlayerWnd, idx);
-						if (!g_App->bAutoStartPlayback && g_App->state == PLAYER_STOPPED)
-						{
-							TogglePlayPause(g_App->hPlayerWnd);
-						}
-					}
-				}
+				PlayEntryAndStart(g_App->hPlayerWnd, GetListViewCurSel(g_App->hPlaylistView));
 				continue;
 			case VK_DELETE:
-				{
-					int idx = GetListViewCurSel(g_App->hPlaylistView);
-					if (idx >= 0 && idx < g_App->playlistCount)
-					{
-						BOOL bRemove = TRUE;
-						if (g_App->bConfirmPlaylistDelete)
-						{
-							bRemove = (ShowFormattedAppMessage(g_App->hPlayerWnd, IDS_CONFIRMDELETEPLAYLISTITEM, MB_ICONQUESTION | MB_YESNO, GetBaseName(g_App->playlist[idx].path)) == IDYES);
-						}
-						if (bRemove)
-						{
-							RemovePlaylistItemAt(g_App->hPlayerWnd, idx);
-						}
-					}
-				}
+				ConfirmAndRemovePlaylistItem(g_App->hPlayerWnd, GetListViewCurSel(g_App->hPlaylistView));
 				continue;
 			case VK_SPACE:
 			case VK_LEFT:

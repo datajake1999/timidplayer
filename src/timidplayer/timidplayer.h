@@ -160,6 +160,7 @@ typedef struct {
 	FileEntry *playlist;
 	int playlistCount;
 	int playlistIndex;
+	int ctxTargetIdx;
 	int repeatMode;
 	DWORD lastPlaylistFingerprint;
 	HWND hPlaylistMgrWnd;
@@ -370,7 +371,6 @@ void ClearPlaylist(HWND hWnd);
 void RebuildRecentFilesMenu(void);
 void RemoveRecentFile(const TCHAR *path);
 void ReloadCurrentFile(HWND hWnd);
-BOOL PlayPlaylistEntryAt(HWND hWnd, int index);
 BOOL LoadAndPlayFile(HWND hWnd, const TCHAR *path);
 BOOL SeedSinglePlaylistAndPlay(HWND hWnd, const TCHAR *path);
 void OpenCommandLinePath(HWND hWnd, const TCHAR *cmdPath);
@@ -389,7 +389,8 @@ void LastTrack(HWND hWnd);
 void TogglePlayPause(HWND hWnd);
 void ShufflePlaylist(HWND hWnd);
 void PopulatePlaylistListBox(HWND hWnd);
-void RemovePlaylistItemAt(HWND hWnd, int idx);
+void PlayEntryAndStart(HWND hWnd, int idx);
+void ConfirmAndRemovePlaylistItem(HWND hWnd, int idx);
 BOOL WINAPI PlaylistMgrDialogProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 void UpdateVolumeKeyInterception(void);

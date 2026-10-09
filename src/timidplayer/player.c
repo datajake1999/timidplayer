@@ -301,6 +301,8 @@ static void UnloadLoadedFile(HWND hWnd)
 	UpdateWindowTitle(hWnd);
 }
 
+static void RemovePlaylistItemAt(HWND hWnd, int idx);
+
 void UnloadCurrentFile(HWND hWnd)
 {
 	int idx = g_App->playlistIndex;
@@ -521,7 +523,7 @@ void ReloadCurrentFile(HWND hWnd)
 	UpdateStatusBar();
 }
 
-BOOL PlayPlaylistEntryAt(HWND hWnd, int index)
+static BOOL PlayPlaylistEntryAt(HWND hWnd, int index)
 {
 	if (g_App->bMidiInEnabled)
 	{
@@ -1202,7 +1204,7 @@ static void ReplayAtIndexOrRefreshUI(HWND hWnd, int index)
 	}
 }
 
-void RemovePlaylistItemAt(HWND hWnd, int idx)
+static void RemovePlaylistItemAt(HWND hWnd, int idx)
 {
 	BOOL wasCurrent;
 	if (idx < 0 || idx >= g_App->playlistCount)
@@ -1227,6 +1229,36 @@ void RemovePlaylistItemAt(HWND hWnd, int idx)
 	else
 	{
 		ReplayAtIndexOrRefreshUI(hWnd, -1);
+	}
+}
+
+void PlayEntryAndStart(HWND hWnd, int idx)
+{
+	if (idx < 0 || idx >= g_App->playlistCount)
+	{
+		return;
+	}
+	PlayPlaylistEntryAt(hWnd, idx);
+	if (!g_App->bAutoStartPlayback && g_App->state == PLAYER_STOPPED)
+	{
+		StartPlayback(hWnd);
+	}
+}
+
+void ConfirmAndRemovePlaylistItem(HWND hWnd, int idx)
+{
+	BOOL bRemove = TRUE;
+	if (idx < 0 || idx >= g_App->playlistCount)
+	{
+		return;
+	}
+	if (g_App->bConfirmPlaylistDelete)
+	{
+		bRemove = (ShowFormattedAppMessage(hWnd, IDS_CONFIRMDELETEPLAYLISTITEM, MB_ICONQUESTION | MB_YESNO, GetBaseName(g_App->playlist[idx].path)) == IDYES);
+	}
+	if (bRemove)
+	{
+		RemovePlaylistItemAt(hWnd, idx);
 	}
 }
 
