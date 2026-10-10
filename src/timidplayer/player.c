@@ -986,7 +986,7 @@ void SaveM3UPlaylistDialog(HWND hWnd)
 	g_App->bPlaylistSavedManually = TRUE;
 }
 
-static void PlayTrackContinuingIfWasPlaying(HWND hWnd, const TCHAR *path)
+void PlayTrackContinuingIfWasPlaying(HWND hWnd, const TCHAR *path)
 {
 	BOOL wasPlaying = (g_App->state == PLAYER_PLAYING);
 	LoadAndPlayFile(hWnd, path);

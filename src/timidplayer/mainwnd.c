@@ -1436,12 +1436,12 @@ LRESULT CALLBACK PlayerWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		}
 		else if (g_App->repeatMode == REPEAT_ONE && g_App->playlistIndex >= 0 && g_App->playlistIndex < g_App->playlistCount)
 		{
-			LoadAndPlayFile(hWnd, g_App->playlist[g_App->playlistIndex].path);
+			PlayTrackContinuingIfWasPlaying(hWnd, g_App->playlist[g_App->playlistIndex].path);
 		}
 		else if (g_App->repeatMode == REPEAT_ALL && g_App->playlistCount > 0)
 		{
 			g_App->playlistIndex = 0;
-			LoadAndPlayFile(hWnd, g_App->playlist[g_App->playlistIndex].path);
+			PlayTrackContinuingIfWasPlaying(hWnd, g_App->playlist[g_App->playlistIndex].path);
 		}
 		else
 		{

@@ -382,6 +382,7 @@ BOOL ClipboardHasPasteableFiles(void);
 BOOL PasteFilesFromClipboard(HWND hWnd);
 BOOL OpenM3UPlaylistDialog(HWND hWnd);
 void SaveM3UPlaylistDialog(HWND hWnd);
+void PlayTrackContinuingIfWasPlaying(HWND hWnd, const TCHAR *path);
 void NextTrack(HWND hWnd);
 void PreviousTrack(HWND hWnd);
 void FirstTrack(HWND hWnd);
