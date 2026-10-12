@@ -834,7 +834,7 @@ static void play_midi(Timid *tm, MidiEvent *e)
 }
 
 //Adapted from ReadMidiText function in gspmidi.cpp
-static void read_midi_text(Timid *tm)
+static void read_midi_text(Timid *tm, int32 start)
 {
     uint32 buff;
     uint32 read;
@@ -842,10 +842,10 @@ static void read_midi_text(Timid *tm)
     if (!tm->fp_midi)
         return;
 
-    fseek(tm->fp_midi, 0, SEEK_SET);
+    fseek(tm->fp_midi, start, SEEK_SET);
 
     if (fread(&buff, 1, 4, tm->fp_midi) != 4 || buff != 0x6468544d) {
-        fseek(tm->fp_midi, 0, SEEK_SET);
+        fseek(tm->fp_midi, start, SEEK_SET);
         return;
     }
 
@@ -858,7 +858,7 @@ static void read_midi_text(Timid *tm)
     }
 
     if (buff != 0x6B72544D) {
-        fseek(tm->fp_midi, 0, SEEK_SET);
+        fseek(tm->fp_midi, start, SEEK_SET);
         return;
     }
 
@@ -900,7 +900,7 @@ static void read_midi_text(Timid *tm)
             break;
         }
     }
-    fseek(tm->fp_midi, 0, SEEK_SET);
+    fseek(tm->fp_midi, start, SEEK_SET);
 }
 
 Timid *timid_init(void)
@@ -1790,6 +1790,8 @@ void timid_reset(Timid *tm)
 
 int timid_load_smf(Timid *tm, char *filename)
 {
+    char chunk_id[4];
+    int32 smf_start = 0;
     if (!tm || !filename)
     {
         return 0;
@@ -1800,6 +1802,133 @@ int timid_load_smf(Timid *tm, char *filename)
     {
         return 0;
     }
+    if (fread(chunk_id, 1, 4, tm->fp_midi) == 4 && memcmp(chunk_id, "RIFF", 4) == 0)
+    {
+        int32 riff_len;
+        int32 file_size;
+        int32 riff_end;
+        int smf_found = 0;
+        if (fread(&riff_len, 4, 1, tm->fp_midi) != 1)
+        {
+            timid_unload_smf(tm);
+            return 0;
+        }
+        riff_len = LE_LONG(riff_len);
+        fseek(tm->fp_midi, 0, SEEK_END);
+        file_size = ftell(tm->fp_midi);
+        fseek(tm->fp_midi, 8, SEEK_SET);
+        if (file_size < 12)
+        {
+            timid_unload_smf(tm);
+            return 0;
+        }
+        riff_end = file_size;
+        if (riff_len >= 4 && riff_len <= file_size - 8)
+        {
+            riff_end = riff_len + 8;
+        }
+        if (fread(chunk_id, 1, 4, tm->fp_midi) == 4 && memcmp(chunk_id, "RMID", 4) == 0)
+        {
+            int32 chunk_len;
+            int32 chunk_start;
+            int32 chunk_end;
+            while (ftell(tm->fp_midi) + 8 <= riff_end && fread(chunk_id, 1, 4, tm->fp_midi) == 4 && fread(&chunk_len, 4, 1, tm->fp_midi) == 1)
+            {
+                chunk_len = LE_LONG(chunk_len);
+                chunk_start = ftell(tm->fp_midi);
+                if (chunk_len < 0 || chunk_len > riff_end - chunk_start)
+                {
+                    chunk_len = riff_end - chunk_start;
+                }
+                chunk_end = chunk_start + chunk_len + (chunk_len & 1);
+                if (!smf_found && memcmp(chunk_id, "data", 4) == 0 && chunk_len >= 14)
+                {
+                    char smf_id[4];
+                    if (fread(smf_id, 1, 4, tm->fp_midi) == 4 && memcmp(smf_id, "MThd", 4) == 0)
+                    {
+                        smf_found = 1;
+                        smf_start = chunk_start;
+                    }
+                }
+                else if (memcmp(chunk_id, "LIST", 4) == 0 && chunk_len >= 4)
+                {
+                    char list_type[4];
+                    if (fread(list_type, 1, 4, tm->fp_midi) == 4 && memcmp(list_type, "INFO", 4) == 0)
+                    {
+                        int32 info_len;
+                        int32 info_start;
+                        int32 info_end;
+                        char *info_dest;
+                        int32 info_max;
+                        int32 info_read;
+                        while (ftell(tm->fp_midi) + 8 <= chunk_end && fread(chunk_id, 1, 4, tm->fp_midi) == 4 && fread(&info_len, 4, 1, tm->fp_midi) == 1)
+                        {
+                            info_len = LE_LONG(info_len);
+                            if (info_len < 0)
+                            {
+                                break;
+                            }
+                            info_start = ftell(tm->fp_midi);
+                            if (info_len > chunk_end - info_start)
+                            {
+                                info_len = chunk_end - info_start;
+                            }
+                            info_end = info_start + info_len + (info_len & 1);
+                            info_dest = NULL;
+                            info_max = 0;
+                            if (memcmp(chunk_id, "INAM", 4) == 0 && !strlen(tm->song_title))
+                            {
+                                info_dest = tm->song_title;
+                                info_max = sizeof(tm->song_title) - 1;
+                            }
+                            else if (memcmp(chunk_id, "ICOP", 4) == 0 && !strlen(tm->song_copyright))
+                            {
+                                info_dest = tm->song_copyright;
+                                info_max = sizeof(tm->song_copyright) - 1;
+                            }
+                            if (info_dest)
+                            {
+                                if (info_len < info_max)
+                                {
+                                    info_max = info_len;
+                                }
+                                info_read = fread(info_dest, 1, info_max, tm->fp_midi);
+                                info_dest[info_read] = '\0';
+                            }
+                            fseek(tm->fp_midi, info_end, SEEK_SET);
+                        }
+                    }
+                }
+                else if (memcmp(chunk_id, "DISP", 4) == 0 && chunk_len > 4 && !strlen(tm->song_title))
+                {
+                    int32 disp_type;
+                    int32 disp_max;
+                    int32 disp_read;
+                    if (fread(&disp_type, 4, 1, tm->fp_midi) == 1 && LE_LONG(disp_type) == 1)
+                    {
+                        disp_max = sizeof(tm->song_title) - 1;
+                        if (chunk_len - 4 < disp_max)
+                        {
+                            disp_max = chunk_len - 4;
+                        }
+                        disp_read = fread(tm->song_title, 1, disp_max, tm->fp_midi);
+                        tm->song_title[disp_read] = '\0';
+                    }
+                }
+                fseek(tm->fp_midi, chunk_end, SEEK_SET);
+            }
+        }
+        if (!smf_found)
+        {
+            timid_unload_smf(tm);
+            return 0;
+        }
+        fseek(tm->fp_midi, smf_start, SEEK_SET);
+    }
+    else
+    {
+        fseek(tm->fp_midi, 0, SEEK_SET);
+    }
     tm->event_list = read_midi_file(tm, tm->fp_midi, &tm->events_midi, &tm->sample_count);
     if (!tm->event_list || !tm->events_midi || !tm->sample_count)
     {
@@ -1807,7 +1936,7 @@ int timid_load_smf(Timid *tm, char *filename)
         return 0;
     }
     load_missing_instruments(tm);
-    read_midi_text(tm);
+    read_midi_text(tm, smf_start);
     skip_to(tm, 0);
     strncpy(tm->last_smf, filename, 1023);
     tm->last_smf[1023]='\0';

@@ -749,7 +749,7 @@ BEGIN
     IDS_ABOUTTXT                  "Copyright (C) 2024-2026 Datajake.\n\nThis program was written with the help of AI.\nTimidity library derived from MIDI Plug-in for GSPlayer by Y.Nagamidori.\n\nTimidity credits:\nTimidity 0.2i by Tuukka Toivonen.\nTimidity Win32 by Davide Moretti.\nTimidity Win95 by Nicolas Witczak.\n\nReverb engine derived from the OpenALSoft EAXReverb implementation."
     IDS_ALREADYRUNNING            "Timidity MIDI Player is already running."
     IDS_ALREADYRUNNINGQ           "Timidity MIDI Player is already running.\n\nLoad files into the existing instance?"
-    IDS_MIDFLT                    "MIDI Files (*.mid;*.midi;*.kar)\0*.mid;*.midi;*.kar\0Everything (*.*)\0*.*\0\0"
+    IDS_MIDFLT                    "MIDI Files (*.mid;*.midi;*.kar;*.rmi)\0*.mid;*.midi;*.kar;*.rmi\0Everything (*.*)\0*.*\0\0"
     IDS_MIDCAP                    "Select MIDI Files"
     IDS_OUTCAP                    "Select Output Folder"
     IDS_CFGFLT                    "Timidity Configuration Files(*.CFG)\0*.CFG\0Everything (*.*)\0*.*\0\0"
