@@ -898,6 +898,9 @@ BOOL WINAPI AudioOutputDialogProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 		SendDlgItemMessage(hWnd, IDC_CHUNKMSS, UDM_SETRANGE32, PLAYER_MIN_CHUNK_MS, PLAYER_MAX_CHUNK_MS);
 		SendDlgItemMessage(hWnd, IDC_CHUNKMSS, UDM_SETPOS32, 0, g_App->chunkMs);
 		SetDlgItemInt(hWnd, IDC_CHUNKMS, g_App->chunkMs, FALSE);
+		SendDlgItemMessage(hWnd, IDC_VOLUME, TBM_SETRANGE, 0, MAKELONG(0, 100));
+		SendDlgItemMessage(hWnd, IDC_VOLUME, TBM_SETPAGESIZE, 0, 10);
+		SendDlgItemMessage(hWnd, IDC_VOLUME, TBM_SETPOS, TRUE, (LPARAM)g_App->volume);
 		if (g_App->bInterceptVolumeKeys)
 		{
 			CheckDlgButton(hWnd, IDC_INTERCEPTVOLUMEKEYS, BST_CHECKED);
@@ -925,22 +928,31 @@ BOOL WINAPI AudioOutputDialogProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 				int sel = (int)SendDlgItemMessage(hWnd, IDC_AUDIODEVICE, CB_GETCURSEL, 0, 0);
 				int bufMs = ClampInt(GetDlgItemInt(hWnd, IDC_BUFFERMS, NULL, FALSE), PLAYER_MIN_BUFFER_MS, PLAYER_MAX_BUFFER_MS);
 				int chunkMs = ClampInt(GetDlgItemInt(hWnd, IDC_CHUNKMS, NULL, FALSE), PLAYER_MIN_CHUNK_MS, PLAYER_MAX_CHUNK_MS);
+				int volume = (int)SendDlgItemMessage(hWnd, IDC_VOLUME, TBM_GETPOS, 0, 0);
 				int newDeviceId = ComboSelToDeviceId(sel, WAVE_MAPPER);
 				BOOL newInterceptVolumeKeys = (IsDlgButtonChecked(hWnd, IDC_INTERCEPTVOLUMEKEYS) == BST_CHECKED);
 				BOOL outputSettingsChanged;
+				BOOL volumeChanged;
 				BOOL interceptSettingChanged;
 				if (chunkMs > bufMs)
 				{
 					chunkMs = bufMs;
 				}
 				outputSettingsChanged = (g_App->hWaveOut != NULL) && (g_App->outputDeviceId != newDeviceId || g_App->bufferMs != bufMs || g_App->chunkMs != chunkMs);
+				volumeChanged = (g_App->hWaveOut != NULL) && (g_App->volume != volume);
 				interceptSettingChanged = (g_App->bInterceptVolumeKeys != newInterceptVolumeKeys);
 				g_App->outputDeviceId = newDeviceId;
 				g_App->bufferMs = bufMs;
 				g_App->chunkMs = chunkMs;
+				g_App->volume = ClampInt(volume, 0, 100);
 				g_App->bInterceptVolumeKeys = newInterceptVolumeKeys;
 				SaveAudioOutputSettings();
 				EndDialog(hWnd, TRUE);
+				if (volumeChanged)
+				{
+					ApplyWaveOutVolume();
+					UpdateStatusBar();
+				}
 				if (outputSettingsChanged)
 				{
 					ReopenWaveOutDevice();
