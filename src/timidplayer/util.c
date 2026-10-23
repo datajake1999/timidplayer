@@ -444,11 +444,11 @@ int ShowMessageBox(HWND hWndOwner, const TCHAR *text, const TCHAR *caption, UINT
 	return result;
 }
 
-void ShowAppStringMessage(HWND hWnd, UINT msgId, UINT iconFlags)
+int ShowAppStringMessage(HWND hWnd, UINT msgId, UINT iconFlags)
 {
 	TCHAR msg[MAX_PATH];
 	LoadAppString(g_App->hInst, msgId, msg, MAX_PATH);
-	ShowMessageBox(hWnd, msg, g_App->appTitle, iconFlags);
+	return ShowMessageBox(hWnd, msg, g_App->appTitle, iconFlags);
 }
 
 int ShowFormattedAppMessage(HWND hWnd, UINT fmtId, UINT iconFlags, ...)

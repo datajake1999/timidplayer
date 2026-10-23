@@ -266,7 +266,7 @@ void GetSongMetadata(Timid *synth, TCHAR *titleOut, TCHAR *copyrightOut);
 void InitDriverConfigDefaults(DriverConfig *cfg);
 void LoadAppString(HINSTANCE hInst, UINT id, TCHAR *buf, int bufChars);
 int ShowMessageBox(HWND hWndOwner, const TCHAR *text, const TCHAR *caption, UINT type);
-void ShowAppStringMessage(HWND hWnd, UINT msgId, UINT iconFlags);
+int ShowAppStringMessage(HWND hWnd, UINT msgId, UINT iconFlags);
 int ShowFormattedAppMessage(HWND hWnd, UINT fmtId, UINT iconFlags, ...);
 BOOL ConfirmAppString(HWND hWnd, UINT msgId);
 void ShowStringErrorWithCaption(HWND hWnd, UINT msgId, UINT capId);
