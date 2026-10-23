@@ -1497,9 +1497,14 @@ LRESULT CALLBACK PlayerWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		}
 		if (g_App->bSettingsRestored && g_App->bLoadPreviousPlaylist && g_App->playlistCount > 0 && !g_App->bPlaylistSavedManually)
 		{
-			if (ConfirmAppString(hWnd, IDS_CONFIRMSAVEPLAYLISTONEXIT))
+			int answer = ShowAppStringMessage(hWnd, IDS_CONFIRMSAVEPLAYLISTONEXIT, MB_ICONQUESTION | MB_YESNOCANCEL);
+			if (answer == IDYES)
 			{
 				SaveM3UPlaylistDialog(hWnd);
+			}
+			else if (answer == IDCANCEL)
+			{
+				return 0;
 			}
 		}
 		DestroyWindow(hWnd);
