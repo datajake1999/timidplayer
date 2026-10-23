@@ -24,6 +24,10 @@ resample.c
 #include <stdio.h>
 #include <malloc.h>
 
+#ifndef _WIN32_WCE
+#include <string.h>
+#endif
+
 #include "internal.h"
 
 #ifdef LINEAR_INTERPOLATION
@@ -668,8 +672,8 @@ sample_t *resample_voice(Timid *tm, int v, int32 *countptr)
 void pre_resample(Timid *tm, Sample * sp)
 {
     double a, xdiff;
-    int32 incr, ofs, newlen, count;
-    int16 *newdata, *dest, *src = (int16 *) sp->data, *vptr;
+    int32 incr, ofs, newlen, count, srclen;
+    int16 *newdata, *dest, *src = (int16 *) sp->data, *pad, *vptr;
     int32 v, v1, v2, v3, v4, i;
     
     static const char note_name[12][3] =
@@ -689,6 +693,13 @@ void pre_resample(Timid *tm, Sample * sp)
     
     count = (newlen >> FRACTION_BITS) - 1;
     ofs = incr = (sp->data_length - (1 << FRACTION_BITS)) / count;
+    
+    srclen = sp->data_length >> FRACTION_BITS;
+    pad = (int16 *)safe_malloc((srclen + 4) * sizeof(int16));
+    pad[0] = src[0];
+    memcpy(pad + 1, src, srclen * sizeof(int16));
+    pad[srclen + 1] = pad[srclen + 2] = pad[srclen + 3] = src[srclen - 1];
+    src = pad + 1;
     
     if (--count)
     *dest++ = src[0];
@@ -724,7 +735,10 @@ void pre_resample(Timid *tm, Sample * sp)
     else
     *dest++ = src[ofs >> FRACTION_BITS];
     *dest = *(dest - 1) / 2;
+    dest++;
     *dest = *(dest - 1) / 2;
+    
+    free(pad);
     
     sp->data_length = newlen;
     sp->loop_start = (int32)(sp->loop_start / a);
