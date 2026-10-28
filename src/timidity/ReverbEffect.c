@@ -123,7 +123,7 @@ static void FilterState_setParams(FilterState *filter, FilterType type, float ga
     // Limit gain to -100dB
     gain = maxf(gain, 0.00001f);
 
-    w0 = F_2PI * freq_mult;
+    w0 = F_2PI * minf(freq_mult, 0.45f);
 
     /* Calculate filter coefficients depending on filter type */
     switch(type)
@@ -956,7 +956,7 @@ void ReverbEffectUpdate(ReverbEffect *effect, int frequency)
     if(effect->settings.DecayHFLimit && effect->settings.AirAbsorptionGainHF < 1.0f)
             hfRatio = CalcLimitedHfRatio(hfRatio, effect->settings.AirAbsorptionGainHF, effect->settings.DecayTime);
 
-    cw = cos(F_2PI * hfscale);
+    cw = cos(F_2PI * minf(hfscale, 0.45f));
     // Update the late lines.
     UpdateLateLines(effect, effect->settings.Gain, effect->settings.LateReverbGain, x, effect->settings.Density, effect->settings.DecayTime, effect->settings.Diffusion, hfRatio, cw, frequency);
 
