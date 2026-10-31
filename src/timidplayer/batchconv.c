@@ -404,6 +404,10 @@ static int EvaluateDryRunOutput(const TCHAR *outPath, double outputBytes, DryRun
 			}
 		}
 	}
+	else
+	{
+		return FILE_RESULT_WOULD_FAIL;
+	}
 	if (exists)
 	{
 		return FILE_RESULT_WOULD_OVERWRITE;
@@ -1106,7 +1110,10 @@ static void StartConversion(HWND hWnd)
 	{
 		g_App->batchOutputFormatIndex = BATCH_FORMAT_DEFAULT;
 	}
-	SaveDefaultOutputFormat(g_App->batchOutputFormatIndex);
+	if (!g_App->bDryRun)
+	{
+		SaveDefaultOutputFormat(g_App->batchOutputFormatIndex);
+	}
 	ResetBatchFileResults();
 	PopulateFileList(hWnd);
 	if (g_App->fileCount > 0)
