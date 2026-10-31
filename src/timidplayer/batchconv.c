@@ -12,6 +12,17 @@
 #define FILE_RESULT_LOAD_FAILED 1
 #define FILE_RESULT_OUTPUT_FAILED 2
 #define FILE_RESULT_SKIPPED 3
+#define FILE_RESULT_WOULD_CONVERT 4
+#define FILE_RESULT_WOULD_OVERWRITE 5
+#define FILE_RESULT_WOULD_FAIL 6
+
+#define DRYRUN_FAIL_NONE 0
+#define DRYRUN_FAIL_NOSPACE 1
+#define DRYRUN_FAIL_BLOCKED 2
+#define DRYRUN_FAIL_TOOLARGE 3
+
+#define DRYRUN_MAX_VOLUMES 8
+#define WAV_MAX_OUTPUT_BYTES 2147483647.0
 
 typedef struct {
 	int fileIndex;
@@ -31,6 +42,8 @@ typedef struct {
 	int lostNotes;
 	int cutNotes;
 	double realtimeRate;
+	double outputBytes;
+	int failReason;
 } FileResultInfo;
 
 typedef struct {
@@ -41,6 +54,8 @@ typedef struct {
 	int totalCutNotes;
 	int totalAudioMs;
 	double totalWallSeconds;
+	int wouldOverwrite;
+	double totalOutputBytes;
 	BOOL canceled;
 } ConvResult;
 
@@ -123,7 +138,7 @@ static void PostProgress(int fileIndex, int fileCount, int percent, const TCHAR 
 	PostMessage(g_App->hBatchWnd, WM_CONV_PROGRESS, 0, (LPARAM)info);
 }
 
-static void PostFileResult(int fileIndex, int outcome, const TCHAR *title, const TCHAR *copyright, int durationMs, int eventCount, int bitrate, int lostNotes, int cutNotes, double realtimeRate)
+static void PostFileResult(int fileIndex, int outcome, const TCHAR *title, const TCHAR *copyright, int durationMs, int eventCount, int bitrate, int lostNotes, int cutNotes, double realtimeRate, double outputBytes, int failReason)
 {
 	FileResultInfo *info = (FileResultInfo *)malloc(sizeof(FileResultInfo));
 	if (!info)
@@ -148,6 +163,8 @@ static void PostFileResult(int fileIndex, int outcome, const TCHAR *title, const
 	info->lostNotes = lostNotes;
 	info->cutNotes = cutNotes;
 	info->realtimeRate = realtimeRate;
+	info->outputBytes = outputBytes;
+	info->failReason = failReason;
 	PostMessage(g_App->hBatchWnd, WM_CONV_FILERESULT, 0, (LPARAM)info);
 }
 
@@ -194,16 +211,17 @@ static unsigned char *AllocAudioRenderBuffer(int channels, int bit_depth)
 
 typedef void (*RenderProgressFn)(void *ctx, int percent);
 
-static BOOL RenderSmfToWav(Timid *synth, int audio_format, unsigned char *buffer, WavWriter *wr, HANDLE hCancelEvent, RenderProgressFn onProgress, void *progressCtx, BOOL *pCanceled)
+static BOOL RenderSmfToWav(Timid *synth, int audio_format, unsigned char *buffer, double bytesPerBuffer, WavWriter *wr, double *pBytes, HANDLE hCancelEvent, RenderProgressFn onProgress, void *progressCtx, BOOL *pCanceled)
 {
 	DWORD lastUpdate = GetTickCount();
 	DWORD now;
 	while (timid_play_smf(synth, audio_format, buffer, AUDIO_BUFFER_SIZE))
 	{
-		if (!WavFileWrite(wr, buffer, AUDIO_BUFFER_SIZE))
+		if (wr && !WavFileWrite(wr, buffer, AUDIO_BUFFER_SIZE))
 		{
 			return FALSE;
 		}
+		*pBytes += bytesPerBuffer;
 		if (hCancelEvent && WaitForSingleObject(hCancelEvent, 0) == WAIT_OBJECT_0)
 		{
 			*pCanceled = TRUE;
@@ -227,24 +245,39 @@ typedef struct {
 	int audioMs;
 	double timeSpent;
 	double realtimeRate;
+	double outputBytes;
 } SmfRenderStats;
 
-static BOOL RenderSmfFileToWav(Timid *synth, int audio_format, int channels, int bit_depth, int sampleRate, int wavFormatTag, unsigned char *buffer, const TCHAR *outPath, HANDLE hCancelEvent, RenderProgressFn onProgress, void *progressCtx, SmfRenderStats *stats)
+static BOOL RenderSmfFileToWav(Timid *synth, int audio_format, int channels, int bit_depth, int sampleRate, int wavFormatTag, unsigned char *buffer, const TCHAR *outPath, BOOL dryRun, HANDLE hCancelEvent, RenderProgressFn onProgress, void *progressCtx, SmfRenderStats *stats)
 {
 	WavWriter wr;
+	WavWriter *activeWriter;
 	TCHAR tempPath[MAX_PATH];
 	clock_t begin, end;
 	BOOL writeOk;
+	double bytesPerBuffer = (double)AUDIO_BUFFER_SIZE * (double)channels * (double)(bit_depth / 8);
 	ZeroMemory(stats, sizeof(SmfRenderStats));
-	if (!OpenTempWavWriter(&wr, outPath, tempPath, MAX_PATH, sampleRate, bit_depth, channels, wavFormatTag))
+	if (!dryRun && !OpenTempWavWriter(&wr, outPath, tempPath, MAX_PATH, sampleRate, bit_depth, channels, wavFormatTag))
 	{
 		stats->createFailed = TRUE;
 		return FALSE;
 	}
+	stats->outputBytes = (double)sizeof(wav_header);
 	begin = clock();
-	writeOk = RenderSmfToWav(synth, audio_format, buffer, &wr, hCancelEvent, onProgress, progressCtx, &stats->canceled);
+	if (dryRun)
+	{
+		activeWriter = NULL;
+	}
+	else
+	{
+		activeWriter = &wr;
+	}
+	writeOk = RenderSmfToWav(synth, audio_format, buffer, bytesPerBuffer, activeWriter, &stats->outputBytes, hCancelEvent, onProgress, progressCtx, &stats->canceled);
 	end = clock();
-	WavFileClose(&wr);
+	if (!dryRun)
+	{
+		WavFileClose(&wr);
+	}
 	stats->lostNotes = timid_get_lost_notes(synth);
 	stats->cutNotes = timid_get_cut_notes(synth);
 	stats->audioMs = timid_get_current_time(synth);
@@ -253,12 +286,145 @@ static BOOL RenderSmfFileToWav(Timid *synth, int audio_format, int channels, int
 	{
 		stats->realtimeRate = ((double)stats->audioMs / 1000.0) / stats->timeSpent;
 	}
+	if (dryRun)
+	{
+		return !stats->canceled && writeOk;
+	}
 	if (stats->canceled || !writeOk)
 	{
 		DeleteFile(tempPath);
 		return FALSE;
 	}
 	return FinalizeWavOutput(tempPath, outPath);
+}
+
+typedef struct {
+	TCHAR root[MAX_PATH];
+	double pending;
+} DryRunVolume;
+
+typedef struct {
+	DryRunVolume volumes[DRYRUN_MAX_VOLUMES];
+	int count;
+} DryRunSpace;
+
+static void GetVolumeRoot(const TCHAR *fullPath, TCHAR *root, int rootSize)
+{
+	int i, slashes = 0, len = (int)_tcslen(fullPath);
+	root[0] = _T('\0');
+	if (len >= 3 && fullPath[1] == _T(':') && fullPath[2] == _T('\\'))
+	{
+		SafeFormat(root, rootSize, _T("%.3s"), fullPath);
+	}
+	else if (len >= 5 && fullPath[0] == _T('\\') && fullPath[1] == _T('\\') && fullPath[2] != _T('?'))
+	{
+		for (i = 2; i < len; i++)
+		{
+			if (fullPath[i] == _T('\\') && ++slashes == 2)
+			{
+				break;
+			}
+		}
+		SafeFormat(root, rootSize, _T("%.*s\\"), i, fullPath);
+	}
+}
+
+static DryRunVolume *FindDryRunVolume(DryRunSpace *space, const TCHAR *root)
+{
+	int i;
+	for (i = 0; i < space->count; i++)
+	{
+		if (_tcsicmp(space->volumes[i].root, root) == 0)
+		{
+			return &space->volumes[i];
+		}
+	}
+	if (space->count >= DRYRUN_MAX_VOLUMES)
+	{
+		return NULL;
+	}
+	SafeFormat(space->volumes[space->count].root, MAX_PATH, _T("%s"), root);
+	space->volumes[space->count].pending = 0.0;
+	return &space->volumes[space->count++];
+}
+
+static int EvaluateDryRunOutput(const TCHAR *outPath, double outputBytes, DryRunSpace *space, int *pReason)
+{
+	WIN32_FIND_DATA fd;
+	HANDLE hFind;
+	BOOL exists = FALSE;
+	double existingBytes = 0.0;
+	TCHAR fullPath[MAX_PATH], root[MAX_PATH];
+	*pReason = DRYRUN_FAIL_NONE;
+	hFind = FindFirstFile(outPath, &fd);
+	if (hFind != INVALID_HANDLE_VALUE)
+	{
+		FindClose(hFind);
+		exists = TRUE;
+		if (fd.dwFileAttributes & (FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_DIRECTORY))
+		{
+			*pReason = DRYRUN_FAIL_BLOCKED;
+			return FILE_RESULT_WOULD_FAIL;
+		}
+		existingBytes = (double)fd.nFileSizeHigh * 4294967296.0 + (double)fd.nFileSizeLow;
+	}
+	if (outputBytes > WAV_MAX_OUTPUT_BYTES)
+	{
+		*pReason = DRYRUN_FAIL_TOOLARGE;
+		return FILE_RESULT_WOULD_FAIL;
+	}
+	if (GetFullPathName(outPath, MAX_PATH, fullPath, NULL))
+	{
+		GetVolumeRoot(fullPath, root, MAX_PATH);
+		if (root[0])
+		{
+			ULARGE_INTEGER freeToCaller, totalBytes, totalFree;
+			if (GetDiskFreeSpaceEx(root, &freeToCaller, &totalBytes, &totalFree))
+			{
+				DryRunVolume *vol = FindDryRunVolume(space, root);
+				double freeBytes = (double)freeToCaller.HighPart * 4294967296.0 + (double)freeToCaller.LowPart;
+				double pending = 0.0;
+				if (vol)
+				{
+					pending = vol->pending;
+				}
+				if (outputBytes > freeBytes - pending)
+				{
+					*pReason = DRYRUN_FAIL_NOSPACE;
+					return FILE_RESULT_WOULD_FAIL;
+				}
+				if (vol)
+				{
+					vol->pending += outputBytes - existingBytes;
+				}
+			}
+			else
+			{
+				return FILE_RESULT_WOULD_FAIL;
+			}
+		}
+	}
+	if (exists)
+	{
+		return FILE_RESULT_WOULD_OVERWRITE;
+	}
+	return FILE_RESULT_WOULD_CONVERT;
+}
+
+static void FormatByteSize(double bytes, TCHAR *buf, int bufSize)
+{
+	if (bytes >= 1073741824.0)
+	{
+		SafeFormat(buf, bufSize, _T("%.2f GB"), bytes / 1073741824.0);
+	}
+	else if (bytes >= 1048576.0)
+	{
+		SafeFormat(buf, bufSize, _T("%.1f MB"), bytes / 1048576.0);
+	}
+	else
+	{
+		SafeFormat(buf, bufSize, _T("%.1f KB"), bytes / 1024.0);
+	}
 }
 
 typedef struct {
@@ -291,7 +457,10 @@ static DWORD WINAPI ConversionThreadProc(LPVOID param)
 	int channels, bit_depth, audio_format, sampleRate, i;
 	int fmtIndex;
 	BOOL canceled = FALSE;
+	BOOL dryRun = g_App->bDryRun;
+	DryRunSpace dryRunSpace;
 	(void)param;
+	dryRunSpace.count = 0;
 	result = (ConvResult *)malloc(sizeof(ConvResult));
 	if (!result)
 	{
@@ -304,6 +473,8 @@ static DWORD WINAPI ConversionThreadProc(LPVOID param)
 	result->totalCutNotes = 0;
 	result->totalAudioMs = 0;
 	result->totalWallSeconds = 0.0;
+	result->wouldOverwrite = 0;
+	result->totalOutputBytes = 0.0;
 	result->canceled = FALSE;
 	synth = CreateConfiguredSynth(&channels, &bit_depth, &audio_format, &sampleRate);
 	if (!synth)
@@ -335,7 +506,7 @@ static DWORD WINAPI ConversionThreadProc(LPVOID param)
 		if (!timid_load_smf(synth, ansiIn))
 		{
 			result->failed++;
-			PostFileResult(i, FILE_RESULT_LOAD_FAILED, NULL, NULL, 0, 0, 0, 0, 0, 0.0);
+			PostFileResult(i, FILE_RESULT_LOAD_FAILED, NULL, NULL, 0, 0, 0, 0, 0, 0.0, 0.0, DRYRUN_FAIL_NONE);
 			continue;
 		}
 		GetSongMetadata(synth, title, copyright);
@@ -347,7 +518,7 @@ static DWORD WINAPI ConversionThreadProc(LPVOID param)
 			bitrate = timid_get_bitrate(synth);
 		}
 		BuildOutputPath(g_App->files[i].path, g_App->fileSubDirs[i].dir, g_App->outDir, g_App->bPreserveDirStructure, outPath, MAX_PATH);
-		if (ShouldPreserveSubDir(g_App->fileSubDirs[i].dir, g_App->outDir, g_App->bPreserveDirStructure))
+		if (!dryRun && ShouldPreserveSubDir(g_App->fileSubDirs[i].dir, g_App->outDir, g_App->bPreserveDirStructure))
 		{
 			TCHAR outSubDir[MAX_PATH];
 			SafeFormat(outSubDir, MAX_PATH, _T("%s\\%s"), g_App->outDir, g_App->fileSubDirs[i].dir);
@@ -356,7 +527,7 @@ static DWORD WINAPI ConversionThreadProc(LPVOID param)
 		if (!g_App->bOverwrite && PathFileExists(outPath))
 		{
 			result->skipped++;
-			PostFileResult(i, FILE_RESULT_SKIPPED, title, copyright, durationMs, eventCount, bitrate, 0, 0, 0.0);
+			PostFileResult(i, FILE_RESULT_SKIPPED, title, copyright, durationMs, eventCount, bitrate, 0, 0, 0.0, 0.0, DRYRUN_FAIL_NONE);
 			timid_unload_smf(synth);
 			continue;
 		}
@@ -364,30 +535,53 @@ static DWORD WINAPI ConversionThreadProc(LPVOID param)
 			ConversionProgressCtx progressCtx;
 			SmfRenderStats stats;
 			BOOL fileOk;
+			int outcome = FILE_RESULT_CONVERTED;
+			int failReason = DRYRUN_FAIL_NONE;
 			progressCtx.fileIndex = i;
 			progressCtx.fileCount = g_App->fileCount;
 			progressCtx.fileName = g_App->files[i].path;
-			fileOk = RenderSmfFileToWav(synth, audio_format, channels, bit_depth, sampleRate, s_outputFormats[fmtIndex].wavFormatTag, buffer, outPath, g_App->hCancelEvent, ConversionProgressCallback, &progressCtx, &stats);
+			fileOk = RenderSmfFileToWav(synth, audio_format, channels, bit_depth, sampleRate, s_outputFormats[fmtIndex].wavFormatTag, buffer, outPath, dryRun, g_App->hCancelEvent, ConversionProgressCallback, &progressCtx, &stats);
 			timid_unload_smf(synth);
 			if (stats.canceled)
 			{
 				canceled = TRUE;
 				break;
 			}
+			if (fileOk && dryRun)
+			{
+				outcome = EvaluateDryRunOutput(outPath, stats.outputBytes, &dryRunSpace, &failReason);
+				if (outcome == FILE_RESULT_WOULD_FAIL)
+				{
+					fileOk = FALSE;
+				}
+			}
 			if (!fileOk)
 			{
 				result->failed++;
-				PostFileResult(i, FILE_RESULT_OUTPUT_FAILED, title, copyright, durationMs, eventCount, bitrate, stats.lostNotes, stats.cutNotes, stats.realtimeRate);
+				if (dryRun)
+				{
+					outcome = FILE_RESULT_WOULD_FAIL;
+				}
+				else
+				{
+					outcome = FILE_RESULT_OUTPUT_FAILED;
+				}
+				PostFileResult(i, outcome, title, copyright, durationMs, eventCount, bitrate, stats.lostNotes, stats.cutNotes, stats.realtimeRate, stats.outputBytes, failReason);
 			}
 			else
 			{
 				PostProgress(i, g_App->fileCount, 100, g_App->files[i].path);
 				result->converted++;
+				if (outcome == FILE_RESULT_WOULD_OVERWRITE)
+				{
+					result->wouldOverwrite++;
+				}
 				result->totalLostNotes += stats.lostNotes;
 				result->totalCutNotes += stats.cutNotes;
 				result->totalAudioMs += stats.audioMs;
 				result->totalWallSeconds += stats.timeSpent;
-				PostFileResult(i, FILE_RESULT_CONVERTED, title, copyright, durationMs, eventCount, bitrate, stats.lostNotes, stats.cutNotes, stats.realtimeRate);
+				result->totalOutputBytes += stats.outputBytes;
+				PostFileResult(i, outcome, title, copyright, durationMs, eventCount, bitrate, stats.lostNotes, stats.cutNotes, stats.realtimeRate, stats.outputBytes, failReason);
 			}
 		}
 	}
@@ -541,6 +735,7 @@ static BOOL ConsumeBoolSwitch(const TCHAR **pp, const TCHAR *switchName, BOOL *f
 	return TRUE;
 }
 
+static void SetIdleConvertButtonLabel(HWND hWnd);
 static void PopulateFileList(HWND hWnd);
 
 static void RefreshBatchDialog(HWND hWnd)
@@ -554,6 +749,11 @@ static void RefreshBatchDialog(HWND hWnd)
 	{
 		CheckDlgButton(hWnd, IDC_PRESERVEDIRS, BST_CHECKED);
 	}
+	if (g_App->bDryRun)
+	{
+		CheckDlgButton(hWnd, IDC_DRYRUN, BST_CHECKED);
+	}
+	SetIdleConvertButtonLabel(hWnd);
 	PopulateFileList(hWnd);
 	if (g_App->fileCount > 0)
 	{
@@ -603,6 +803,10 @@ void OpenCommandLineBatch(HWND hWnd, const TCHAR *cmdPaths)
 			continue;
 		}
 		if (ConsumeBoolSwitch(&p, CMDLINE_PRESERVEDIRS_SWITCH, &g_App->bPreserveDirStructure))
+		{
+			continue;
+		}
+		if (ConsumeBoolSwitch(&p, CMDLINE_DRYRUN_SWITCH, &g_App->bDryRun))
 		{
 			continue;
 		}
@@ -841,6 +1045,7 @@ static void SetControlsEnabled(HWND hWnd, BOOL enabled)
 	EnableWindow(GetDlgItem(hWnd, IDC_OVERWRITE), enabled);
 	EnableWindow(GetDlgItem(hWnd, IDC_PRESERVEDIRS), enabled);
 	EnableWindow(GetDlgItem(hWnd, IDC_OUTFORMAT), enabled);
+	EnableWindow(GetDlgItem(hWnd, IDC_DRYRUN), enabled);
 	EnableWindow(GetDlgItem(hWnd, IDC_SAVECSV), enabled);
 	EnableWindow(GetDlgItem(hWnd, IDCANCEL), enabled);
 }
@@ -850,6 +1055,18 @@ static void SetConvertButtonLabel(HWND hWnd, UINT stringId)
 	TCHAR text[MAX_PATH];
 	LoadAppString(g_App->hInst, stringId, text, MAX_PATH);
 	SetDlgItemText(hWnd, IDC_CONVERT, text);
+}
+
+static void SetIdleConvertButtonLabel(HWND hWnd)
+{
+	if (IsDlgButtonChecked(hWnd, IDC_DRYRUN) == BST_CHECKED)
+	{
+		SetConvertButtonLabel(hWnd, IDS_CONVERTDRYRUNBTN);
+	}
+	else
+	{
+		SetConvertButtonLabel(hWnd, IDS_CONVERTBTN);
+	}
 }
 
 static void ResetBatchFileResults(void)
@@ -877,7 +1094,8 @@ static void StartConversion(HWND hWnd)
 		return;
 	}
 	GetDlgItemText(hWnd, IDC_OUTDIR, g_App->outDir, MAX_PATH);
-	if (!EnsureOutputDirectory(hWnd, g_App->outDir))
+	g_App->bDryRun = IsDlgButtonChecked(hWnd, IDC_DRYRUN) == BST_CHECKED;
+	if (!g_App->bDryRun && !EnsureOutputDirectory(hWnd, g_App->outDir))
 	{
 		return;
 	}
@@ -908,7 +1126,7 @@ static void StartConversion(HWND hWnd)
 	if (!g_App->hThread)
 	{
 		SetControlsEnabled(hWnd, TRUE);
-		SetConvertButtonLabel(hWnd, IDS_CONVERTBTN);
+		SetIdleConvertButtonLabel(hWnd);
 		g_App->bConverting = FALSE;
 	}
 }
@@ -982,7 +1200,7 @@ static void WriteCsvRateField(FILE *f, BOOL condition, double value)
 
 static BOOL WriteResultsCsv(const TCHAR *path)
 {
-	static const UINT outcomeStringIds[] = { IDS_OUTCOME_CONVERTED, IDS_OUTCOME_LOADFAILED, IDS_OUTCOME_WRITEFAILED, IDS_OUTCOME_SKIPPED };
+	static const UINT outcomeStringIds[] = { IDS_OUTCOME_CONVERTED, IDS_OUTCOME_LOADFAILED, IDS_OUTCOME_WRITEFAILED, IDS_OUTCOME_SKIPPED, IDS_OUTCOME_WOULDCONVERT, IDS_OUTCOME_WOULDOVERWRITE, IDS_OUTCOME_WOULDFAIL };
 	FILE *f;
 	TCHAR header[MAX_PATH];
 	int i;
@@ -1106,10 +1324,35 @@ static void HandleFileResult(HWND hWnd, FileResultInfo *info)
 		LoadAppString(g_App->hInst, IDS_RESULT_SKIPPED, fmt, 64);
 		AppendFormat(extra, 600, fmt);
 		break;
+	case FILE_RESULT_WOULD_CONVERT:
+		LoadAppString(g_App->hInst, IDS_RESULT_WOULDCONVERT, fmt, 64);
+		AppendFormat(extra, 600, fmt, info->lostNotes, info->cutNotes);
+		break;
+	case FILE_RESULT_WOULD_OVERWRITE:
+		LoadAppString(g_App->hInst, IDS_RESULT_WOULDOVERWRITE, fmt, 64);
+		AppendFormat(extra, 600, fmt, info->lostNotes, info->cutNotes);
+		break;
+	case FILE_RESULT_WOULD_FAIL:
+		{
+			static const UINT reasonIds[] = { IDS_WOULDFAIL_UNKNOWN, IDS_WOULDFAIL_NOSPACE, IDS_WOULDFAIL_BLOCKED, IDS_WOULDFAIL_TOOLARGE };
+			TCHAR reason[96];
+			int reasonIndex = ClampInt(info->failReason, 0, 3);
+			LoadAppString(g_App->hInst, reasonIds[reasonIndex], reason, 96);
+			LoadAppString(g_App->hInst, IDS_RESULT_WOULDFAIL, fmt, 64);
+			AppendFormat(extra, 600, fmt, reason, info->lostNotes, info->cutNotes);
+		}
+		break;
 	default:
 		LoadAppString(g_App->hInst, IDS_RESULT_LOSTCUT, fmt, 64);
 		AppendFormat(extra, 600, fmt, info->lostNotes, info->cutNotes);
 		break;
+	}
+	if (info->outcome >= FILE_RESULT_WOULD_CONVERT && info->outputBytes > 0.0)
+	{
+		TCHAR sizeBuf[32];
+		FormatByteSize(info->outputBytes, sizeBuf, 32);
+		LoadAppString(g_App->hInst, IDS_RESULT_SIZE, fmt, 64);
+		AppendFormat(extra, 600, fmt, sizeBuf);
 	}
 	if (info->outcome != FILE_RESULT_LOAD_FAILED && info->outcome != FILE_RESULT_SKIPPED && info->realtimeRate > 0.0)
 	{
@@ -1160,7 +1403,7 @@ static void HandleDone(HWND hWnd, ConvResult *result)
 	CloseHandleAndClear(&g_App->hThread);
 	g_App->bConverting = FALSE;
 	SetControlsEnabled(hWnd, TRUE);
-	SetConvertButtonLabel(hWnd, IDS_CONVERTBTN);
+	SetIdleConvertButtonLabel(hWnd);
 	SendDlgItemMessage(hWnd, IDC_PROGRESS, PBM_SETPOS, 0, 0);
 	SetDlgItemText(hWnd, IDC_STATUS, _T(""));
 	if (!result)
@@ -1178,7 +1421,16 @@ static void HandleDone(HWND hWnd, ConvResult *result)
 	}
 	if (!result->canceled)
 	{
-		ShowFormattedAppMessage(hWnd, IDS_SUMMARY, MB_ICONINFORMATION, result->converted, total, result->failed, result->skipped, result->totalLostNotes, result->totalCutNotes, avgRate);
+		if (g_App->bDryRun)
+		{
+			TCHAR sizeBuf[32];
+			FormatByteSize(result->totalOutputBytes, sizeBuf, 32);
+			ShowFormattedAppMessage(hWnd, IDS_SUMMARY_DRYRUN, MB_ICONINFORMATION, result->converted, total, result->wouldOverwrite, result->failed, result->skipped, sizeBuf, result->totalLostNotes, result->totalCutNotes, avgRate);
+		}
+		else
+		{
+			ShowFormattedAppMessage(hWnd, IDS_SUMMARY, MB_ICONINFORMATION, result->converted, total, result->failed, result->skipped, result->totalLostNotes, result->totalCutNotes, avgRate);
+		}
 	}
 	if (g_App->bBatchAutoSaveCsv)
 	{
@@ -1277,6 +1529,12 @@ BOOL WINAPI BatchDialogProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 				StartConversion(hWnd);
 			}
 			return TRUE;
+		case IDC_DRYRUN:
+			if (!g_App->bConverting)
+			{
+				SetIdleConvertButtonLabel(hWnd);
+			}
+			return TRUE;
 		case IDC_SAVECSV:
 			SaveResultsToCsv(hWnd);
 			return TRUE;
@@ -1300,6 +1558,7 @@ BOOL WINAPI BatchDialogProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 		g_App->bBatchFormatFromCmdLine = FALSE;
 		g_App->bBatchAutoStart = FALSE;
 		g_App->bBatchAutoSaveCsv = FALSE;
+		g_App->bDryRun = FALSE;
 		return TRUE;
 	}
 	return FALSE;
@@ -1354,7 +1613,7 @@ static DWORD WINAPI QuickConvertThreadProc(LPVOID param)
 		timid_close(synth);
 		return FailQuickConvert(result, IDS_QC_OUTOFMEMORY);
 	}
-	ok = RenderSmfFileToWav(synth, audio_format, channels, bit_depth, sampleRate, 1, buffer, g_App->quickConvertOutPath, NULL, QuickConvertProgressCallback, NULL, &stats);
+	ok = RenderSmfFileToWav(synth, audio_format, channels, bit_depth, sampleRate, 1, buffer, g_App->quickConvertOutPath, FALSE, NULL, QuickConvertProgressCallback, NULL, &stats);
 	free(buffer);
 	timid_unload_smf(synth);
 	timid_close(synth);

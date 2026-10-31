@@ -28,7 +28,7 @@ static int ExtractCmdLineTokens(TCHAR *outBuffer, int outBufferChars)
 #else
 		WideCharToMultiByte(CP_ACP, 0, argv[i], -1, tpath, MAX_PATH, NULL, NULL);
 #endif
-		bLiteral = bLiteralNext || _tcsicmp(tpath, CMDLINE_ENQUEUE_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_BATCH_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_OUTDIR_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_FORMAT_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_OVERWRITE_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_PRESERVEDIRS_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_AUTOSTART_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_AUTOSAVECSV_SWITCH) == 0;
+		bLiteral = bLiteralNext || _tcsicmp(tpath, CMDLINE_ENQUEUE_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_BATCH_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_OUTDIR_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_FORMAT_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_OVERWRITE_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_PRESERVEDIRS_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_AUTOSTART_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_AUTOSAVECSV_SWITCH) == 0 || _tcsicmp(tpath, CMDLINE_DRYRUN_SWITCH) == 0;
 		bLiteralNext = (_tcsicmp(tpath, CMDLINE_FORMAT_SWITCH) == 0);
 		if (bLiteral)
 		{

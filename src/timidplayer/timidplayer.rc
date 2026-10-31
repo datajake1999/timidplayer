@@ -396,6 +396,7 @@ BEGIN
     AUTOCHECKBOX    "&Preserve Folder Structure",IDC_PRESERVEDIRS,155,224,225,10,WS_TABSTOP
     LTEXT           "Output Forma&t:",IDC_STATIC,10,242,60,8
     COMBOBOX        IDC_OUTFORMAT,73,240,112,100,CBS_DROPDOWNLIST|WS_VSCROLL|WS_TABSTOP
+    AUTOCHECKBOX    "Dr&y Run (Don't Write Files)",IDC_DRYRUN,200,242,190,10,WS_TABSTOP
     CONTROL         "",IDC_PROGRESS,"msctls_progress32",WS_BORDER,10,260,380,12
     LTEXT           "",IDC_STATUS,10,275,380,10,SS_NOPREFIX|SS_LEFTNOWORDWRAP
     DEFPUSHBUTTON   "&Convert",IDC_CONVERT,10,300,80,17,WS_TABSTOP
@@ -837,6 +838,7 @@ BEGIN
     IDS_BATCHCONVERTINPROGRESS    "A batch conversion is in progress.\n\nPlease wait for it to finish, or cancel it, before closing."
     IDS_CANCELBTN                 "&Cancel"
     IDS_CONVERTBTN                "&Convert"
+    IDS_CONVERTDRYRUNBTN          "&Convert (Dry Run)"
     IDS_CONVERTINGSTATUSFMT       "Converting %d of %d: %s (%d%%)"
     IDS_OUTDIRSAVED               "Default output folder saved."
     IDS_RESULT_LOADFAILED         " - Failed to load"
@@ -844,6 +846,15 @@ BEGIN
     IDS_RESULT_SKIPPED            " - Skipped (output already exists)"
     IDS_RESULT_LOSTCUT            " - Lost: %d, Cut: %d"
     IDS_RESULT_SPEED              ", Speed: %.2fx realtime"
+    IDS_RESULT_WOULDCONVERT       " - Would convert (Lost: %d, Cut: %d)"
+    IDS_RESULT_WOULDOVERWRITE     " - Would overwrite existing file (Lost: %d, Cut: %d)"
+    IDS_RESULT_WOULDFAIL          " - Would fail to write output: %s (Lost: %d, Cut: %d)"
+    IDS_RESULT_SIZE               ", Est. size: %s"
+    IDS_WOULDFAIL_UNKNOWN         "unknown reason"
+    IDS_WOULDFAIL_NOSPACE         "not enough disk space"
+    IDS_WOULDFAIL_BLOCKED         "existing output is read-only or is a folder"
+    IDS_WOULDFAIL_TOOLARGE        "exceeds the 2 GB WAV size limit"
+    IDS_SUMMARY_DRYRUN            "Dry run complete. No files were written.\n\nWould convert: %d of %d (%d replacing existing files).\nFailed or would fail: %d.\nWould skip (already exist): %d.\n\nEstimated output size: %s.\nTotal lost notes: %d.\nTotal cut notes: %d.\nAverage speed: %.2fx realtime."
     IDS_RESULT_TITLE              " | Title: %s"
     IDS_RESULT_COPYRIGHT          " | Copyright: %s"
     IDS_RESULT_DURATION           " | Duration: %s"
@@ -856,6 +867,9 @@ BEGIN
     IDS_OUTCOME_LOADFAILED        "Load Failed"
     IDS_OUTCOME_WRITEFAILED       "Write Failed"
     IDS_OUTCOME_SKIPPED           "Skipped"
+    IDS_OUTCOME_WOULDCONVERT      "Would Convert"
+    IDS_OUTCOME_WOULDOVERWRITE    "Would Overwrite"
+    IDS_OUTCOME_WOULDFAIL         "Would Fail"
     IDS_OUTCOME_PENDING           "Not Converted"
     IDS_TRAYRESTORE               "R&estore"
     IDS_TRAYEXIT                  "E&xit"

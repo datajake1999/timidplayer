@@ -50,6 +50,7 @@ You can pass file and folder paths on the command-line to add them to the player
 * /f followed by a number ranging from 0 to 6: sets the output PCM format. The supported formats are 8 through 32-bit integer, 32 and 64-bit floating point, and 8-bit uLlaw.
 * /w: enables the overwriting of existing files.
 * /p: preserves the folder structure of the input paths when generating the output paths.
+* /d: enables dry run mode.
 * /a: automatically starts the conversion.
 * /s: saves a CSV file of the conversion statistics in the output directory. The name of this file is the word conversion followed by the current date and time.
 
