@@ -49,6 +49,7 @@ extern "C" {
 #define CMDLINE_PRESERVEDIRS_SWITCH _T("/p")
 #define CMDLINE_AUTOSTART_SWITCH _T("/a")
 #define CMDLINE_AUTOSAVECSV_SWITCH _T("/s")
+#define CMDLINE_DRYRUN_SWITCH _T("/d")
 
 #define TIMER_ID_SLEEP 1
 
@@ -132,6 +133,7 @@ typedef struct {
 	BOOL bBatchFormatFromCmdLine;
 	BOOL bBatchAutoStart;
 	BOOL bBatchAutoSaveCsv;
+	BOOL bDryRun;
 	HWND hPlayerWnd;
 	HWND hStatusBar;
 	HWND hSeekBar;
