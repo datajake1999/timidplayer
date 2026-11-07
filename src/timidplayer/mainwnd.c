@@ -639,6 +639,40 @@ static BOOL BlockCloseIfBusy(HWND hWnd, const BOOL *busyFlag, UINT msgId)
 	return *busyFlag;
 }
 
+static BOOL ConfirmPlaylistSave(HWND hWnd)
+{
+	if (g_App->bSettingsRestored && g_App->bLoadPreviousPlaylist && g_App->playlistCount > 0 && !g_App->bPlaylistSavedManually)
+	{
+		int answer = ShowAppStringMessage(hWnd, IDS_CONFIRMSAVEPLAYLISTONEXIT, MB_ICONQUESTION | MB_YESNOCANCEL);
+		if (answer == IDYES)
+		{
+			SaveM3UPlaylistDialog(hWnd);
+		}
+		else if (answer == IDCANCEL)
+		{
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+static BOOL BlockExit(HWND hWnd)
+{
+	if (BlockCloseIfBusy(hWnd, &g_App->bQuickConverting, IDS_QUICKCONVERTINPROGRESS))
+	{
+		return TRUE;
+	}
+	if (BlockCloseIfBusy(hWnd, &g_App->bConverting, IDS_BATCHCONVERTINPROGRESS))
+	{
+		return TRUE;
+	}
+	if (ConfirmPlaylistSave(hWnd))
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
 static void StopPlaybackAndSync(HWND hWnd)
 {
 	StopPlayback();
@@ -1137,6 +1171,7 @@ LRESULT CALLBACK PlayerWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 		case ID_FILE_EXIT:
 			g_App->bExitRequested = TRUE;
 			SendMessage(hWnd, WM_CLOSE, 0, 0);
+			g_App->bExitRequested = FALSE;
 			return 0;
 		case ID_PLAYBACK_PLAYPAUSE:
 			TogglePlayPause(hWnd);
@@ -1481,31 +1516,28 @@ LRESULT CALLBACK PlayerWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 			RefreshPlayerUI(hWnd);
 		}
 		return 0;
+	case WM_QUERYENDSESSION:
+		if (BlockExit(hWnd))
+		{
+			return FALSE;
+		}
+		return TRUE;
+	case WM_ENDSESSION:
+		if (wParam)
+		{
+			SaveAudioOutputSettings();
+			SaveSession();
+		}
+		return 0;
 	case WM_CLOSE:
 		if (g_App->bRunFromTray && !g_App->bExitRequested)
 		{
 			ShowWindow(hWnd, SW_HIDE);
 			return 0;
 		}
-		if (BlockCloseIfBusy(hWnd, &g_App->bQuickConverting, IDS_QUICKCONVERTINPROGRESS))
+		if (BlockExit(hWnd))
 		{
 			return 0;
-		}
-		if (BlockCloseIfBusy(hWnd, &g_App->bConverting, IDS_BATCHCONVERTINPROGRESS))
-		{
-			return 0;
-		}
-		if (g_App->bSettingsRestored && g_App->bLoadPreviousPlaylist && g_App->playlistCount > 0 && !g_App->bPlaylistSavedManually)
-		{
-			int answer = ShowAppStringMessage(hWnd, IDS_CONFIRMSAVEPLAYLISTONEXIT, MB_ICONQUESTION | MB_YESNOCANCEL);
-			if (answer == IDYES)
-			{
-				SaveM3UPlaylistDialog(hWnd);
-			}
-			else if (answer == IDCANCEL)
-			{
-				return 0;
-			}
 		}
 		DestroyWindow(hWnd);
 		return 0;

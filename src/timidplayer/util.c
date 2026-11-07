@@ -439,7 +439,13 @@ static void RestoreFocus(HWND hFocus)
 int ShowMessageBox(HWND hWndOwner, const TCHAR *text, const TCHAR *caption, UINT type)
 {
 	HWND hFocus = GetFocus();
-	int result = MessageBox(ResolveVisibleOwner(hWndOwner), text, caption, type);
+	HWND hOwner = ResolveVisibleOwner(hWndOwner);
+	int result;
+	if (!hOwner)
+	{
+		type |= (MB_SETFOREGROUND | MB_TASKMODAL);
+	}
+	result = MessageBox(hOwner, text, caption, type);
 	RestoreFocus(hFocus);
 	return result;
 }
