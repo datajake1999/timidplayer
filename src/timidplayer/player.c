@@ -965,25 +965,26 @@ BOOL OpenM3UPlaylistDialog(HWND hWnd)
 	return PlayFirstPlaylistEntry(hWnd);
 }
 
-void SaveM3UPlaylistDialog(HWND hWnd)
+BOOL SaveM3UPlaylistDialog(HWND hWnd)
 {
 	TCHAR path[MAX_PATH];
 	if (g_App->playlistCount == 0)
 	{
 		ShowAppStringMessage(hWnd, IDS_M3UNOPLAYLIST, MB_ICONWARNING);
-		return;
+		return FALSE;
 	}
 	ZeroMemory(path, sizeof(path));
 	if (!PromptFileName(hWnd, TRUE, path, MAX_PATH, IDS_M3UFLT, IDS_M3USAVECAP, _T("m3u"), NULL, OFN_OVERWRITEPROMPT))
 	{
-		return;
+		return FALSE;
 	}
 	if (!SaveM3UPlaylist(path))
 	{
 		ShowStringErrorWithCaption(hWnd, IDS_M3USAVEFAILED, IDS_M3USAVECAP);
-		return;
+		return FALSE;
 	}
 	g_App->bPlaylistSavedManually = TRUE;
+	return TRUE;
 }
 
 void PlayTrackContinuingIfWasPlaying(HWND hWnd, const TCHAR *path)

@@ -646,7 +646,10 @@ static BOOL ConfirmPlaylistSave(HWND hWnd)
 		int answer = ShowAppStringMessage(hWnd, IDS_CONFIRMSAVEPLAYLISTONEXIT, MB_ICONQUESTION | MB_YESNOCANCEL);
 		if (answer == IDYES)
 		{
-			SaveM3UPlaylistDialog(hWnd);
+			if (!SaveM3UPlaylistDialog(hWnd))
+			{
+				return TRUE;
+			}
 		}
 		else if (answer == IDCANCEL)
 		{
